@@ -26,15 +26,22 @@ export default function Home() {
             grid-template-columns: 1fr !important;
           }
           .hero-bg-grid > div:first-child {
-            position: relative !important;
-            height: 55vh !important;
+            position: absolute !important;
+            inset: 0 !important;
+            width: 100% !important;
+            height: 100% !important;
             order: 1 !important;
           }
           .hero-bg-grid > div:last-child {
             display: none !important;
           }
+          .hero-gradient {
+            background: linear-gradient(180deg, rgba(10,25,18,0.25) 0%, rgba(10,25,18,0.55) 45%, rgba(10,25,18,0.96) 85%, rgba(10,25,18,1) 100%) !important;
+          }
           .hero-content-wrap {
             justify-content: center !important;
+            align-items: flex-end !important;
+            height: 100% !important;
           }
           .hero-text-box {
             max-width: 100% !important;
@@ -46,11 +53,14 @@ export default function Home() {
             justify-content: center !important;
           }
           .hero-section {
-            min-height: auto !important;
+            min-height: 100vh !important;
           }
           .hero-inner-container {
             padding-top: calc(var(--nav-height) + 24px) !important;
             padding-bottom: 40px !important;
+            height: 100% !important;
+            display: flex !important;
+            align-items: flex-end !important;
           }
         }
 
@@ -147,7 +157,7 @@ export default function Home() {
                 display: 'block',
               }}
             />
-            <div style={{
+            <div className="hero-gradient" style={{
               position: 'absolute',
               inset: 0,
               background: isRTL
