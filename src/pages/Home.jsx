@@ -19,10 +19,93 @@ export default function Home() {
 
   return (
     <div style={{ background: 'var(--color-bg)', minHeight: '100vh', overflowX: 'hidden' }}>
+      {/* ── STYLES RESPONSIVE POUR LE HERO (MOBILE) ── */}
+      <style>{`
+        @media (max-width: 768px) {
+          .hero-bg-grid {
+            grid-template-columns: 1fr !important;
+          }
+          .hero-bg-grid > div:first-child {
+            position: relative !important;
+            height: 55vh !important;
+            order: 1 !important;
+          }
+          .hero-bg-grid > div:last-child {
+            display: none !important;
+          }
+          .hero-content-wrap {
+            justify-content: center !important;
+          }
+          .hero-text-box {
+            max-width: 100% !important;
+            padding-left: 20px !important;
+            padding-right: 20px !important;
+            text-align: center !important;
+          }
+          .hero-cta-wrap {
+            justify-content: center !important;
+          }
+          .hero-section {
+            min-height: auto !important;
+          }
+          .hero-inner-container {
+            padding-top: calc(var(--nav-height) + 24px) !important;
+            padding-bottom: 40px !important;
+          }
+        }
+
+        @media (max-width: 480px) {
+          .hero-title {
+            font-size: clamp(1.8rem, 8vw, 2.4rem) !important;
+          }
+        }
+
+        /* ── ÉTAPES ("Comment ça marche") : empiler verticalement sur mobile ── */
+        @media (max-width: 768px) {
+          .steps-line {
+            display: none !important;
+          }
+          .steps-row {
+            flex-direction: column !important;
+            gap: 36px !important;
+          }
+          .steps-row > div {
+            width: 100% !important;
+            padding: 0 !important;
+          }
+        }
+
+        /* ── RÉCOMPENSES : empiler verticalement sur mobile pour éviter le débordement ── */
+        @media (max-width: 640px) {
+          .reward-row {
+            flex-wrap: wrap !important;
+            row-gap: 8px !important;
+          }
+          .reward-dots {
+            display: none !important;
+          }
+          .reward-label {
+            max-width: none !important;
+            flex: 1 1 auto !important;
+          }
+          .reward-pts {
+            margin-left: auto !important;
+          }
+          .cta-final-btn {
+            width: 100% !important;
+            box-sizing: border-box !important;
+            white-space: normal !important;
+            text-align: center !important;
+            justify-content: center !important;
+          }
+        }
+      `}</style>
+
       <Navbar />
 
       {/* ── HERO SECTION: SPLIT HERO (NO BLANK/EMPTY SPACE) ── */}
       <section
+        className="hero-section"
         style={{
           position: 'relative',
           paddingTop: 0,
@@ -36,14 +119,17 @@ export default function Home() {
         }}
       >
         {/* Full Section Background Container */}
-        <div style={{
-          position: 'absolute',
-          inset: 0,
-          display: 'grid',
-          gridTemplateColumns: isRTL ? '1fr 1.15fr' : '1.15fr 1fr',
-          direction: 'ltr',
-          zIndex: 1,
-        }}>
+        <div
+          className="hero-bg-grid"
+          style={{
+            position: 'absolute',
+            inset: 0,
+            display: 'grid',
+            gridTemplateColumns: isRTL ? '1fr 1.15fr' : '1.15fr 1fr',
+            direction: 'ltr',
+            zIndex: 1,
+          }}
+        >
           <div style={{
             position: 'relative',
             width: '100%',
@@ -78,21 +164,27 @@ export default function Home() {
           }} />
         </div>
 
-        <div className="container" style={{ position: 'relative', zIndex: 2, paddingTop: 'calc(var(--nav-height) + 40px)', paddingBottom: 60 }}>
-          <div style={{
-            display: 'flex',
-            justifyContent: isRTL ? 'flex-start' : 'flex-end',
-            direction: 'ltr',
-          }}>
+        <div className="container hero-inner-container" style={{ position: 'relative', zIndex: 2, paddingTop: 'calc(var(--nav-height) + 40px)', paddingBottom: 60 }}>
+          <div
+            className="hero-content-wrap"
+            style={{
+              display: 'flex',
+              justifyContent: isRTL ? 'flex-start' : 'flex-end',
+              direction: 'ltr',
+            }}
+          >
 
-            <div style={{
-              width: '100%',
-              maxWidth: 500,
-              direction: isRTL ? 'rtl' : 'ltr',
-              textAlign: isRTL ? 'right' : 'left',
-              paddingLeft: isRTL ? 0 : 24,
-              paddingRight: isRTL ? 24 : 0,
-            }}>
+            <div
+              className="hero-text-box"
+              style={{
+                width: '100%',
+                maxWidth: 500,
+                direction: isRTL ? 'rtl' : 'ltr',
+                textAlign: isRTL ? 'right' : 'left',
+                paddingLeft: isRTL ? 0 : 24,
+                paddingRight: isRTL ? 24 : 0,
+              }}
+            >
               <span style={{
                 display: 'inline-block',
                 fontSize: 11,
@@ -105,15 +197,18 @@ export default function Home() {
                 {t('home.hero.badge')}
               </span>
 
-              <h1 style={{
-                fontFamily: isRTL ? 'var(--font-arabic-display)' : 'var(--font-serif)',
-                fontSize: isRTL ? 'clamp(2.2rem, 4vw, 3.2rem)' : 'clamp(2.5rem, 4.2vw, 3.4rem)',
-                fontWeight: isRTL ? 800 : 400,
-                lineHeight: 1.18,
-                color: '#ffffff',
-                marginBottom: 20,
-                textShadow: '0 4px 20px rgba(0,0,0,0.9)',
-              }}>
+              <h1
+                className="hero-title"
+                style={{
+                  fontFamily: isRTL ? 'var(--font-arabic-display)' : 'var(--font-serif)',
+                  fontSize: isRTL ? 'clamp(2.2rem, 4vw, 3.2rem)' : 'clamp(2.5rem, 4.2vw, 3.4rem)',
+                  fontWeight: isRTL ? 800 : 400,
+                  lineHeight: 1.18,
+                  color: '#ffffff',
+                  marginBottom: 20,
+                  textShadow: '0 4px 20px rgba(0,0,0,0.9)',
+                }}
+              >
                 {t('home.hero.title')} <br />
                 <span style={{ fontStyle: isRTL ? 'normal' : 'italic', color: '#79C3A6' }}>
                   {t('home.hero.titleHighlight')}
@@ -130,7 +225,7 @@ export default function Home() {
                 {t('home.hero.subtitle')}
               </p>
 
-              <div style={{ display: 'flex', gap: 16, flexWrap: 'wrap' }}>
+              <div className="hero-cta-wrap" style={{ display: 'flex', gap: 16, flexWrap: 'wrap' }}>
                 <Link
                   to="/register"
                   className="btn btn-forest"
@@ -240,7 +335,7 @@ export default function Home() {
           {/* Étapes en pointillés en bas */}
           <div style={{ maxWidth: 900, margin: '64px auto 0', position: 'relative' }}>
             {/* Ligne pointillée horizontale reliant les étapes */}
-            <div style={{
+            <div className="steps-line" style={{
               position: 'absolute',
               top: 19,
               left: 19,
@@ -249,7 +344,7 @@ export default function Home() {
               zIndex: 0,
             }} />
 
-            <div style={{
+            <div className="steps-row" style={{
               display: 'flex',
               justifyContent: 'space-between',
               position: 'relative',
@@ -384,7 +479,7 @@ export default function Home() {
             {Array.isArray(actions) && actions.map((a, i) => {
               const RewardIcon = rewardIcons[i % rewardIcons.length];
               return (
-                <div key={i} style={{
+                <div key={i} className="reward-row" style={{
                   display: 'flex',
                   alignItems: 'center',
                   gap: 18,
@@ -422,7 +517,7 @@ export default function Home() {
                     <RewardIcon size={16} strokeWidth={1.5} />
                   </div>
 
-                  <span style={{
+                  <span className="reward-label" style={{
                     flexShrink: 0,
                     fontSize: '0.98rem',
                     color: 'rgba(255,255,255,0.88)',
@@ -432,7 +527,7 @@ export default function Home() {
                     {a.label}
                   </span>
 
-                  <span style={{
+                  <span className="reward-dots" style={{
                     flex: 1,
                     minWidth: 16,
                     borderBottom: '1px dotted rgba(255,255,255,0.28)',
@@ -460,7 +555,7 @@ export default function Home() {
           <div style={{ marginTop: 56, textAlign: 'center' }}>
             <Link
               to="/register"
-              className="btn btn-haute-gold btn-lg"
+              className="btn btn-haute-gold btn-lg cta-final-btn"
               style={{ fontWeight: 600 }}
             >
               <span>{t('home.cta.button')}</span>
