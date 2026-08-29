@@ -1,0 +1,485 @@
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700&family=Montserrat:wght@200;300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Cairo:wght@300;400;600;700;800&family=Aref+Ruqaa:wght@400;700&display=swap');
+@import "tailwindcss";
+
+/* ========================================
+   ÉMERAUDE ÉDITORIAL — DESIGN TOKENS
+   ======================================== */
+:root {
+  /* Vert forêt profond (remplace le noir/anthracite "luxe") */
+  --color-primary: #12261E;
+  --color-primary-dark: #0A1912;
+  --color-primary-mid: #1C3A2C;
+  --color-primary-light: #E4EFE9;
+  --color-primary-50: #EAF2EE;
+
+  /* Émeraude signature (remplace l'or) */
+  --color-accent: #0E6E57;
+  --color-accent-dark: #0B5744;
+  --color-accent-light: #E9F6F1;
+  --color-gold-glow: rgba(14, 110, 87, 0.15);
+  --color-sage: #6E9481;
+
+  /* Fond chaud & surfaces — inchangés, gardent la chaleur */
+  --color-bg: #FBFAF6;
+  --color-surface: #ffffff;
+  --color-card: #F5F7F2;
+
+  /* Texte & bordures */
+  --color-text: #12261E;
+  --color-text-secondary: #5B655D;
+  --color-text-muted: #98A39B;
+  --color-border: #E3E7DF;
+  --color-border-hover: #C7D1CA;
+  --color-border-gold: rgba(14, 110, 87, 0.28);
+
+  /* Typographie */
+  --font-serif: 'Playfair Display', serif;
+  --font-sans: 'Montserrat', sans-serif;
+  --font-arabic: 'Cairo', sans-serif;
+  --font-arabic-display: 'Aref Ruqaa', serif;
+  --font-luxury: 'Cinzel', serif;
+
+  /* Formes */
+  --radius-sm: 4px;
+  --radius: 8px;
+  --radius-lg: 16px;
+  --radius-xl: 24px;
+  --radius-full: 9999px;
+
+  /* Ombres — chaudes et légères */
+  --shadow: 0 8px 28px rgba(18, 38, 30, 0.08);
+  --shadow-sm: 0 4px 16px rgba(18, 38, 30, 0.03);
+  --shadow-md: 0 12px 36px rgba(18, 38, 30, 0.06);
+  --shadow-lg: 0 24px 60px rgba(18, 38, 30, 0.1);
+
+  --transition: 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  --nav-height: 90px;
+}
+
+/* ========================================
+   BASE STYLES & TYPOGRAPHY
+   ======================================== */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+  font-size: 16px;
+}
+
+html[lang="fr"] body,
+html[lang="fr"] * {
+  font-family: var(--font-sans);
+}
+
+html[lang="fr"] h1,
+html[lang="fr"] h2,
+html[lang="fr"] h3,
+html[lang="fr"] .font-serif {
+  font-family: var(--font-serif);
+}
+
+html[lang="ar"] body,
+html[lang="ar"] * {
+  font-family: var(--font-arabic);
+}
+
+html[lang="ar"] h1,
+html[lang="ar"] h2,
+html[lang="ar"] h3,
+html[lang="ar"] h4 {
+  font-family: var(--font-arabic-display);
+  font-weight: 700;
+  letter-spacing: 0 !important;
+  font-style: normal !important;
+}
+
+body {
+  background: var(--color-bg);
+  color: var(--color-text);
+  line-height: 1.8;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+/* ========================================
+   CAPSULE LOGO BADGE
+   ======================================== */
+.logo-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 22px;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(16px);
+  border: 1px solid var(--color-border-gold);
+  border-radius: var(--radius-full);
+  box-shadow: 0 4px 20px rgba(14, 110, 87, 0.12);
+  transition: all var(--transition);
+}
+
+.logo-badge:hover {
+  transform: translateY(-2px);
+  border-color: var(--color-accent);
+  box-shadow: 0 8px 28px rgba(14, 110, 87, 0.2);
+}
+
+.logo-badge img {
+  height: 44px;
+  width: auto;
+  object-fit: contain;
+  display: block;
+}
+
+/* ========================================
+   BOUTONS
+   ======================================== */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 12px 24px;
+  border-radius: var(--radius-sm);
+  font-weight: 500;
+  font-size: 12px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  cursor: pointer;
+  border: none;
+  outline: none;
+  transition: all var(--transition);
+  white-space: nowrap;
+  text-decoration: none;
+}
+
+.btn-haute {
+  background: var(--color-primary);
+  color: #ffffff;
+  border: 1px solid var(--color-primary);
+  box-shadow: 0 4px 20px rgba(18, 38, 30, 0.15);
+}
+
+.btn-haute:hover {
+  background: var(--color-accent);
+  border-color: var(--color-accent);
+  color: #ffffff;
+  transform: translateY(-2px);
+  box-shadow: 0 10px 30px rgba(14, 110, 87, 0.3);
+}
+
+.btn-haute-gold {
+  background: var(--color-accent);
+  color: #ffffff;
+  border: 1px solid var(--color-accent);
+}
+
+.btn-haute-gold:hover {
+  background: var(--color-accent-dark);
+  transform: translateY(-2px);
+  box-shadow: 0 10px 30px rgba(14, 110, 87, 0.35);
+}
+
+.btn-forest {
+  background: var(--color-accent);
+  color: #ffffff;
+  border: 1px solid var(--color-accent);
+}
+
+.btn-forest:hover {
+  background: var(--color-accent-dark, #0b5443);
+  transform: translateY(-2px);
+  box-shadow: 0 10px 30px rgba(14, 110, 87, 0.35);
+  color: #ffffff;
+}
+
+.btn-outline-gold {
+  background: transparent;
+  color: var(--color-primary);
+  border: 1px solid var(--color-accent);
+}
+
+.btn-outline-gold:hover {
+  background: var(--color-accent);
+  color: #ffffff;
+}
+
+.btn-lg {
+  padding: 18px 44px;
+  font-size: 13px;
+}
+
+.btn-sm {
+  padding: 10px 24px;
+  font-size: 11px;
+}
+
+/* ========================================
+   SECTION & TYPOGRAPHIE
+   ======================================== */
+.section {
+  padding: 130px 0;
+}
+
+.container {
+  width: 100%;
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 36px;
+}
+
+.section-haute-eyebrow,
+.section-dash-eyebrow,
+.section-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--color-accent);
+  margin-bottom: 24px;
+}
+
+.section-haute-eyebrow::before,
+.section-dash-eyebrow::before,
+.section-eyebrow::before {
+  content: '';
+  display: block;
+  width: 32px;
+  height: 1px;
+  background: var(--color-accent);
+}
+
+[dir="rtl"] .section-haute-eyebrow,
+[dir="rtl"] .section-dash-eyebrow,
+[dir="rtl"] .section-eyebrow {
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+.section-title {
+  font-family: var(--font-serif);
+  font-size: 3rem;
+  font-weight: 400;
+  color: var(--color-primary);
+  line-height: 1.18;
+  margin-bottom: 24px;
+}
+
+[dir="rtl"] .section-title {
+  font-family: var(--font-arabic-display);
+  font-weight: 700;
+}
+
+@media (min-width: 768px) {
+  .section-title {
+    font-size: 3.8rem;
+  }
+}
+
+/* ========================================
+   CHAMPS DE FORMULAIRE
+   ======================================== */
+.input {
+  width: 100%;
+  padding: 16px 20px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  font-size: 14px;
+  font-family: inherit;
+  background: var(--color-surface);
+  color: var(--color-text);
+  transition: all var(--transition);
+  outline: none;
+}
+
+.input:focus {
+  border-color: var(--color-accent);
+  box-shadow: 0 0 0 3px rgba(14, 110, 87, 0.15);
+}
+
+.input-label {
+  display: block;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--color-text-secondary);
+  margin-bottom: 10px;
+}
+
+.dash-layout {
+  display: flex;
+  min-height: calc(100vh - var(--nav-height));
+}
+
+.dash-sidebar {
+  width: 240px;
+  flex-shrink: 0;
+  background: var(--color-surface);
+  border-right: 1px solid var(--color-border);
+  display: flex;
+  flex-direction: column;
+  padding: 28px 18px;
+  gap: 8px;
+  position: sticky;
+  top: var(--nav-height);
+  height: calc(100vh - var(--nav-height));
+}
+
+.dash-main {
+  flex: 1;
+  padding: 48px 56px;
+  min-width: 0;
+}
+
+.sidebar-item {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 18px;
+  border-radius: var(--radius-sm);
+  border: none;
+  background: transparent;
+  color: var(--color-text-secondary);
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.05em;
+  cursor: pointer;
+  width: 100%;
+  transition: all var(--transition);
+}
+
+.sidebar-item.active {
+  background: var(--color-accent-light);
+  color: var(--color-accent-dark);
+  font-weight: 700;
+}
+
+[dir="rtl"] .sidebar-item {
+  text-align: right;
+  flex-direction: row-reverse;
+}
+
+.status-chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 12px;
+  border-radius: var(--radius-full);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.status-pending {
+  background: #fef3c7;
+  color: #b45309;
+}
+
+.status-confirmed {
+  background: #dbeafe;
+  color: #1d4ed8;
+}
+
+.status-done {
+  background: var(--color-primary-light);
+  color: var(--color-primary);
+}
+
+.status-cancelled {
+  background: #fee2e2;
+  color: #b91c1c;
+}
+
+.card-hover {
+  transition: transform var(--transition), box-shadow var(--transition);
+}
+
+.card-hover:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-md);
+}
+
+.progress-bar {
+  background: var(--color-primary-light);
+  border-radius: 99px;
+  height: 8px;
+  overflow: hidden;
+  position: relative;
+  z-index: 1;
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--color-accent), #4FB894);
+  border-radius: 99px;
+  transition: width 1s ease;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fadeInUp {
+  animation: fadeInUp 0.5s ease both;
+}
+
+.delay-200 {
+  animation-delay: 0.2s;
+}
+
+.delay-300 {
+  animation-delay: 0.3s;
+}
+
+.delay-400 {
+  animation-delay: 0.4s;
+}
+
+.delay-500 {
+  animation-delay: 0.5s;
+}
+
+@keyframes spin-slow {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.97);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@media (max-width: 767px) {
+  .dash-sidebar {
+    display: none;
+  }
+
+  .dash-main {
+    padding: 24px 18px;
+  }
+}

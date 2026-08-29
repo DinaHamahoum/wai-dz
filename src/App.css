@@ -1,0 +1,289 @@
+.counter {
+  font-size: 16px;
+  padding: 5px 10px;
+  border-radius: 5px;
+  color: var(--accent);
+  background: var(--accent-bg);
+  border: 2px solid transparent;
+  transition: border-color 0.3s;
+  margin-bottom: 24px;
+
+  &:hover {
+    border-color: var(--accent-border);
+  }
+  &:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+}
+
+.hero {
+  position: relative;
+
+  .base,
+  .framework,
+  .vite {
+    inset-inline: 0;
+    margin: 0 auto;
+  }
+
+  .base {
+    width: 170px;
+    position: relative;
+    z-index: 0;
+  }
+
+  .framework,
+  .vite {
+    position: absolute;
+  }
+
+  .framework {
+    z-index: 1;
+    top: 34px;
+    height: 28px;
+    transform: perspective(2000px) rotateZ(300deg) rotateX(44deg) rotateY(39deg)
+      scale(1.4);
+  }
+
+  .vite {
+    z-index: 0;
+    top: 107px;
+    height: 26px;
+    width: auto;
+    transform: perspective(2000px) rotateZ(300deg) rotateX(40deg) rotateY(39deg)
+      scale(0.8);
+  }
+}
+
+#center {
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+  place-content: center;
+  place-items: center;
+  flex-grow: 1;
+
+  @media (max-width: 1024px) {
+    padding: 32px 20px 24px;
+    gap: 18px;
+  }
+}
+
+#next-steps {
+  display: flex;
+  border-top: 1px solid var(--border);
+  text-align: left;
+
+  & > div {
+    flex: 1 1 0;
+    padding: 32px;
+    @media (max-width: 1024px) {
+      padding: 24px 20px;
+    }
+  }
+
+  .icon {
+    margin-bottom: 16px;
+    width: 22px;
+    height: 22px;
+  }
+
+  @media (max-width: 1024px) {
+    flex-direction: column;
+    text-align: center;
+  }
+}
+
+#docs {
+  border-right: 1px solid var(--border);
+
+  @media (max-width: 1024px) {
+    border-right: none;
+    border-bottom: 1px solid var(--border);
+  }
+}
+
+#next-steps ul {
+  list-style: none;
+  padding: 0;
+  display: flex;
+  gap: 8px;
+  margin: 32px 0 0;
+
+  .logo {
+    height: 18px;
+  }
+
+  a {
+    color: var(--text-h);
+    font-size: 16px;
+    border-radius: 6px;
+    background: var(--social-bg);
+    display: flex;
+    padding: 6px 12px;
+    align-items: center;
+    gap: 8px;
+    text-decoration: none;
+    transition: box-shadow 0.3s;
+
+    &:hover {
+      box-shadow: var(--shadow);
+    }
+    .button-icon {
+      height: 18px;
+      width: 18px;
+    }
+  }
+
+  @media (max-width: 1024px) {
+    margin-top: 20px;
+    flex-wrap: wrap;
+    justify-content: center;
+
+    li {
+      flex: 1 1 calc(50% - 8px);
+    }
+
+    a {
+      width: 100%;
+      justify-content: center;
+      box-sizing: border-box;
+    }
+  }
+}
+
+#spacer {
+  height: 88px;
+  border-top: 1px solid var(--border);
+  @media (max-width: 1024px) {
+    height: 48px;
+  }
+}
+
+.ticks {
+  position: relative;
+  width: 100%;
+
+  &::before,
+  &::after {
+    content: '';
+    position: absolute;
+    top: -4.5px;
+    border: 5px solid transparent;
+  }
+
+  &::before {
+    left: 0;
+    border-left-color: var(--border);
+  }
+  &::after {
+    right: 0;
+    border-right-color: var(--border);
+  }
+}
+
+/* -----------------------------
+   Responsive styles for "Comment ça marche"
+   ----------------------------- */
+.howit-grid {
+  display: grid;
+  grid-template-columns: 6fr 6fr;
+  gap: 60px;
+  align-items: center;
+}
+
+.howit-image > div {
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.howit-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.howit-steps .section-title {
+  margin-bottom: 6px;
+}
+
+.howit-steps-list {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+}
+
+.howit-step {
+  display: flex;
+  gap: 28px;
+  align-items: flex-start;
+}
+
+.howit-number {
+  font-size: 3.6rem;
+  color: var(--color-accent);
+  line-height: 1;
+}
+
+@media (max-width: 900px) {
+  .howit-grid {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+
+  /* stack: image on top, steps below */
+  .howit-image { order: 0; }
+  .howit-steps { order: 1; }
+
+  .howit-number { font-size: 2.4rem; }
+  .howit-steps .section-title { font-size: 1.6rem; }
+  .howit-step { gap: 18px; padding-bottom: 20px; }
+  .howit-steps-list { gap: 20px; }
+}
+
+@media (max-width: 480px) {
+  .howit-number { font-size: 2rem; }
+  .howit-steps .section-title { font-size: 1.4rem; }
+}
+
+/* Mobile card style: image full-width on top, steps as stacked cards */
+@media (max-width: 600px) {
+  .howit-grid {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+
+  /* ensure steps appear first and image is placed below on mobile */
+  .howit-image { order: 1; }
+  .howit-image > div { aspect-ratio: 16/9; }
+
+  .howit-steps { order: 0; }
+
+  .howit-step {
+    background: #fbfbfa;
+    padding: 16px;
+    border-radius: 12px;
+    box-shadow: 0 6px 18px rgba(16,24,20,0.04);
+    align-items: center;
+    gap: 14px;
+    border-bottom: none !important;
+  }
+
+  .howit-number {
+    width: 56px;
+    height: 56px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: var(--color-accent-bg, #eef6f0);
+    color: var(--color-accent);
+    font-size: 1.25rem;
+    flex-shrink: 0;
+  }
+
+  .howit-step h3 { margin: 0 0 4px 0; }
+  .howit-step p { margin: 0; }
+}
