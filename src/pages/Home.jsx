@@ -86,11 +86,17 @@ export default function Home() {
           }
         }
 
-        /* ── RÉCOMPENSES : empiler verticalement sur mobile pour éviter le débordement ── */
+        /* ── RÉCOMPENSES : garder icône/texte/points sur une seule ligne, sans débordement ── */
         @media (max-width: 640px) {
           .reward-row {
-            flex-wrap: wrap !important;
-            row-gap: 8px !important;
+            flex-wrap: nowrap !important;
+            align-items: flex-start !important;
+            gap: 12px !important;
+            padding: 18px 4px !important;
+          }
+          .reward-icon {
+            width: 32px !important;
+            height: 32px !important;
           }
           .reward-dots {
             display: none !important;
@@ -98,9 +104,14 @@ export default function Home() {
           .reward-label {
             max-width: none !important;
             flex: 1 1 auto !important;
+            min-width: 0 !important;
+            font-size: 0.88rem !important;
+            line-height: 1.35 !important;
           }
           .reward-pts {
+            flex-shrink: 0 !important;
             margin-left: auto !important;
+            font-size: 1.25rem !important;
           }
           .cta-final-btn {
             width: 100% !important;
