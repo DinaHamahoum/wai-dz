@@ -42,6 +42,7 @@ export default function Home() {
             justify-content: center !important;
             align-items: flex-end !important;
             height: 100% !important;
+            width: 100% !important;
           }
           .hero-text-box {
             max-width: 100% !important;
