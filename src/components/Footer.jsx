@@ -4,7 +4,7 @@ import { useLanguage } from '../i18n/LanguageContext';
 import logo from '../assets/logo.png';
 
 export default function Footer() {
-  const { t } = useLanguage();
+  const { t, lang } = useLanguage();
 
   return (
     <footer style={{
@@ -41,7 +41,6 @@ export default function Footer() {
               {[
                 { label: t('footer.links.home'), href: '/' },
                 { label: t('footer.links.about'), href: '/#acteurs' },
-                { label: t('footer.links.contact'), href: '/#contact' },
               ].map(l => (
                 <a
                   key={l.href}
@@ -59,7 +58,7 @@ export default function Footer() {
                 onMouseEnter={e => e.currentTarget.style.color = '#ffffff'}
                 onMouseLeave={e => e.currentTarget.style.color = 'var(--color-accent)'}
               >
-                Espace Professionnel
+                {lang === 'fr' ? 'Espace Professionnel' : 'الفضاء المهني'}
               </Link>
             </div>
           </div>

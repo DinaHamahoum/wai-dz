@@ -67,7 +67,7 @@ export default function ReportModal({ isOpen, onClose, userId, onSuccess }) {
         user_id: resolvedUserId,
         description: finalDescription,
         photo_url: photoUrl,
-        statut: 'en_attente',
+        statut: 'nouveau',
       };
 
       const { data: insertedRows, error: insertError } = await supabase

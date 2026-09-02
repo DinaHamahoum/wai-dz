@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
@@ -45,6 +45,15 @@ export default function ContainersMap() {
   const { lang } = useLanguage();
   const isRTL = lang === 'ar';
   const { containers, loading, error } = useContainers();
+  const [userPos, setUserPos] = useState(null);
+
+  useEffect(() => {
+    if (!navigator.geolocation) return;
+    navigator.geolocation.getCurrentPosition(
+      (pos) => setUserPos({ lat: pos.coords.latitude, lng: pos.coords.longitude }),
+      () => {}
+    );
+  }, []);
 
   if (loading) {
     return (
@@ -143,6 +152,24 @@ export default function ContainersMap() {
         })}
 
         <MapBounds containers={containers} />
+
+        {userPos && (
+          <Marker
+            position={[userPos.lat, userPos.lng]}
+            icon={L.divIcon({
+              className: "",
+              html: `<div style="width:16px;height:16px;border-radius:50%;background:#2563eb;border:3px solid #fff;box-shadow:0 0 0 2px #2563eb;"></div>`,
+              iconSize: [16, 16],
+              iconAnchor: [8, 8],
+            })}
+          >
+            <Popup>
+              <div style={{ fontFamily: 'inherit', fontSize: 13, textAlign: isRTL ? 'right' : 'left', direction: isRTL ? 'rtl' : 'ltr' }}>
+                <strong>{isRTL ? 'موقعي' : 'Ma position'}</strong>
+              </div>
+            </Popup>
+          </Marker>
+        )}
       </MapContainer>
 
       {/* Subtle filter to make the map match the warm cream aesthetic without losing any sharpness */}

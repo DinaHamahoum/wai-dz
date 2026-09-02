@@ -231,7 +231,7 @@ export default function CitoyenDashboard() {
     fetchDashboardData();
   }, [session]);
 
-  /* Calcul des conteneurs affichés : triés par proximité si GPS actif, sinon 5 premiers non triés */
+  /* Calcul des conteneurs affichés : triés par proximité si GPS actif, sinon rien */
   const displayedContainers = useMemo(() => {
     if (!nearbyContainers || nearbyContainers.length === 0) return [];
 
@@ -246,10 +246,7 @@ export default function CitoyenDashboard() {
         .slice(0, 5);
     }
 
-    return nearbyContainers.slice(0, 5).map((c) => ({
-      ...c,
-      distance: null,
-    }));
+    return [];
   }, [nearbyContainers, locationEnabled, userLocation]);
 
   useEffect(() => {
@@ -963,7 +960,7 @@ export default function CitoyenDashboard() {
                     }} />
                     {locationEnabled
                       ? (lang === 'fr' ? 'Position GPS activée — Conteneurs triés par proximité' : 'الموقع الجغرافي مفعّل — الحاويات مرتبة حسب الأقرب إليك')
-                      : (lang === 'fr' ? 'Position GPS désactivée — Affichage des 5 premiers conteneurs (non triés par distance)' : 'الموقع الجغرافي غير مفعّل — عرض الحاويات الـ 5 الأولى (غير مرتبة حسب المسافة)')}
+                      : (lang === 'fr' ? 'Position GPS désactivée — Activez le GPS pour voir les conteneurs les plus proches' : 'الموقع الجغرافي غير مفعّل — فعّل الموقع لعرض الحاويات الأقرب إليك')}
                   </p>
                 </div>
 
