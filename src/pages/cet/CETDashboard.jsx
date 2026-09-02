@@ -575,6 +575,11 @@ export default function CETDashboard() {
                               {d.type_dechet || (lang === 'fr' ? 'Non recyclable' : 'غير قابل للتدوير')}
                               {d.quantite && <> · <strong>{d.quantite}</strong></>}
                             </p>
+                            {d.description && (
+                              <div style={{ marginTop: 8, fontSize: 13, color: 'var(--color-text-secondary)', background: 'var(--color-bg)', padding: '8px 12px', borderRadius: 'var(--radius-sm)' }}>
+                                {d.description}
+                              </div>
+                            )}
                           </div>
                         </div>
 

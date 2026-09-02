@@ -508,6 +508,11 @@ export default function RecyclageDashboard() {
                             return lang === 'fr' ? type : (t[type] || type);
                           })()} · <strong>{d.quantite || "—"}</strong>
                         </p>
+                        {d.description && (
+                          <div style={{ marginTop: 8, fontSize: 13, color: 'var(--color-text-secondary)', background: 'var(--color-bg)', padding: '8px 12px', borderRadius: 'var(--radius-sm)' }}>
+                            {d.description}
+                          </div>
+                        )}
                       </div>
                     </div>
 

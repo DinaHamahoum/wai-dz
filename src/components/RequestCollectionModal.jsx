@@ -63,6 +63,7 @@ export default function RequestCollectionModal({ isOpen, onClose, userId, onSucc
         categorie_dechet: categorieDechet,
         type_dechet: typeDechet,
         quantite: quantite,
+        description: description,
         statut: 'en_attente',
         created_at: new Date().toISOString(),
       };

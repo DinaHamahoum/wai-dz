@@ -925,7 +925,15 @@ export default function CitoyenDashboard() {
 
               <HauteCard style={{ overflow: 'hidden' }}>
                 <div style={{ width: '100%', height: '550px' }}>
-                  <ContainersMap />
+                  {locationEnabled ? (
+                    <ContainersMap />
+                  ) : (
+                    <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', background: 'var(--color-bg)', padding: 24, textAlign: 'center' }}>
+                      <p style={{ color: 'var(--color-text-muted)', fontSize: 16 }}>
+                        {lang === 'fr' ? 'Activez le GPS pour voir la carte des conteneurs.' : 'يرجى تفعيل الموقع الجغرافي لعرض خريطة الحاويات.'}
+                      </p>
+                    </div>
+                  )}
                 </div>
               </HauteCard>
 

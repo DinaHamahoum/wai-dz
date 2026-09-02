@@ -28,15 +28,17 @@ const brandIcon = L.divIcon({
 });
 
 // Component to handle auto-centering based on markers
-function MapBounds({ containers }) {
+function MapBounds({ containers, userPos }) {
   const map = useMap();
 
   useEffect(() => {
-    if (containers && containers.length > 0) {
+    if (userPos) {
+      map.setView([userPos.lat, userPos.lng], 15);
+    } else if (containers && containers.length > 0) {
       const bounds = L.latLngBounds(containers.map(c => [c.latitude, c.longitude]));
       map.fitBounds(bounds, { padding: [50, 50], maxZoom: 15 });
     }
-  }, [containers, map]);
+  }, [containers, map, userPos]);
 
   return null;
 }
@@ -151,16 +153,21 @@ export default function ContainersMap() {
           );
         })}
 
-        <MapBounds containers={containers} />
+        <MapBounds containers={containers} userPos={userPos} />
 
         {userPos && (
           <Marker
             position={[userPos.lat, userPos.lng]}
             icon={L.divIcon({
               className: "",
-              html: `<div style="width:16px;height:16px;border-radius:50%;background:#2563eb;border:3px solid #fff;box-shadow:0 0 0 2px #2563eb;"></div>`,
-              iconSize: [16, 16],
-              iconAnchor: [8, 8],
+              html: `<div style="width:32px;height:32px;border-radius:50%;background:#2563eb;border:2px solid #fff;box-shadow:0 3px 8px rgba(37,99,235,0.4);display:flex;align-items:center;justify-content:center;">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                  <circle cx="12" cy="7" r="4"></circle>
+                </svg>
+              </div>`,
+              iconSize: [32, 32],
+              iconAnchor: [16, 16],
             })}
           >
             <Popup>
