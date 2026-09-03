@@ -5,6 +5,7 @@ import ProtectedRoute from './components/ProtectedRoute';
 import Home from './pages/Home';
 import Login from './pages/auth/Login';
 import Register from './pages/auth/Register';
+import UpdatePassword from './pages/auth/UpdatePassword';
 import CitoyenDashboard from './pages/citoyen/CitoyenDashboard';
 import RecyclageDashboard from './pages/recyclage/RecyclageDashboard';
 import RecyclageRegister from './pages/recyclage/RecyclageRegister';
@@ -23,6 +24,7 @@ function App() {
             <Route path="/"                        element={<Home />} />
             <Route path="/login"                   element={<Login />} />
             <Route path="/register"                element={<Register />} />
+            <Route path="/update-password"         element={<UpdatePassword />} />
             <Route path="/confidentialite"         element={<PrivacyPolicy />} />
             <Route path="/conditions-utilisation"  element={<TermsOfUse />} />
 

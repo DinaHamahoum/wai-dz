@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import {
   LayoutDashboard, Map, ClipboardList, Gift, User,
   AlertTriangle, Recycle, Star, ChevronRight, Clock,
-  LogOut, Package, Plus, Menu, X, MapPin, Phone,
+  LogOut, Package, Plus, Menu, X, MapPin, Phone, Navigation,
 } from 'lucide-react';
 import { useLanguage } from '../../i18n/LanguageContext';
 import { useAuth } from '../../contexts/AuthContext';
@@ -172,6 +172,23 @@ export default function CitoyenDashboard() {
       { timeout: 8000, enableHighAccuracy: true }
     );
   }, []);
+
+  const requestLocation = () => {
+    if (!navigator.geolocation) {
+      alert(lang === 'fr' ? "La géolocalisation n'est pas supportée par votre navigateur." : "الموقع الجغرافي غير مدعوم في متصفحك.");
+      return;
+    }
+    navigator.geolocation.getCurrentPosition(
+      (pos) => {
+        setUserLocation({ lat: pos.coords.latitude, lng: pos.coords.longitude });
+        setLocationEnabled(true);
+      },
+      (err) => {
+        alert(lang === 'fr' ? "Veuillez autoriser l'accès à la localisation dans les paramètres de votre navigateur." : "يرجى السماح بالوصول إلى الموقع في إعدادات متصفحك.");
+      },
+      { timeout: 8000, enableHighAccuracy: true }
+    );
+  };
 
   /* Redirection si le compte connecté est une commune */
   useEffect(() => {
@@ -929,9 +946,20 @@ export default function CitoyenDashboard() {
                     <ContainersMap />
                   ) : (
                     <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', background: 'var(--color-bg)', padding: 24, textAlign: 'center' }}>
-                      <p style={{ color: 'var(--color-text-muted)', fontSize: 16 }}>
-                        {lang === 'fr' ? 'Activez le GPS pour voir la carte des conteneurs.' : 'يرجى تفعيل الموقع الجغرافي لعرض خريطة الحاويات.'}
+                      <MapPin size={48} color="var(--color-text-muted)" style={{ marginBottom: 16, opacity: 0.5 }} />
+                      <p style={{ color: 'var(--color-text-secondary)', fontSize: 16, marginBottom: 20, maxWidth: 400, lineHeight: 1.5 }}>
+                        {lang === 'fr' 
+                          ? 'Activez la localisation GPS pour pouvoir afficher la carte interactive et trouver instantanément les conteneurs les plus proches de vous.' 
+                          : 'قم بتفعيل تحديد الموقع لعرض الخريطة التفاعلية والعثور فوراً على الحاويات الأقرب إليك.'}
                       </p>
+                      <button onClick={requestLocation} style={{
+                        background: 'var(--color-primary)', color: '#fff', border: 'none', borderRadius: 'var(--radius-lg)',
+                        padding: '12px 24px', fontSize: 15, fontWeight: 600, display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer',
+                        boxShadow: '0 4px 12px rgba(10, 25, 18, 0.15)', transition: 'all 0.2s ease'
+                      }}>
+                        <Navigation size={18} />
+                        {lang === 'fr' ? 'Activer ma localisation' : 'تفعيل موقعي'}
+                      </button>
                     </div>
                   )}
                 </div>
@@ -968,7 +996,13 @@ export default function CitoyenDashboard() {
                     }} />
                     {locationEnabled
                       ? (lang === 'fr' ? 'Position GPS activée — Conteneurs triés par proximité' : 'الموقع الجغرافي مفعّل — الحاويات مرتبة حسب الأقرب إليك')
-                      : (lang === 'fr' ? 'Position GPS désactivée — Activez le GPS pour voir les conteneurs les plus proches' : 'الموقع الجغرافي غير مفعّل — فعّل الموقع لعرض الحاويات الأقرب إليك')}
+                      : (
+                        <button onClick={requestLocation} style={{
+                          background: 'transparent', border: 'none', color: 'var(--color-accent)', fontWeight: 600, fontSize: 12, padding: 0, cursor: 'pointer', textDecoration: 'underline'
+                        }}>
+                          {lang === 'fr' ? 'Activer le GPS pour voir les conteneurs les plus proches' : 'فعّل الموقع لعرض الحاويات الأقرب إليك'}
+                        </button>
+                      )}
                   </p>
                 </div>
 

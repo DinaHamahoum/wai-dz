@@ -100,6 +100,28 @@ export default function Login() {
     }
   };
 
+  const handleForgotPassword = async (e) => {
+    e.preventDefault();
+    if (!form.email) {
+      setError(lang === 'fr' ? 'Veuillez saisir votre adresse email ci-dessus pour réinitialiser le mot de passe.' : 'يرجى إدخال عنوان بريدك الإلكتروني أعلاه لإعادة تعيين كلمة المرور.');
+      return;
+    }
+    
+    setLoading(true);
+    setError(null);
+    try {
+      const { error } = await supabase.auth.resetPasswordForEmail(form.email, {
+        redirectTo: `${window.location.origin}/update-password`,
+      });
+      if (error) throw error;
+      alert(lang === 'fr' ? 'Un email de réinitialisation vous a été envoyé. Vérifiez votre boîte de réception.' : 'تم إرسال بريد إلكتروني لإعادة تعيين كلمة المرور إليك. تحقق من صندوق الوارد الخاص بك.');
+    } catch (err) {
+      setError(lang === 'fr' ? `Erreur: ${err.message}` : `خطأ: ${err.message}`);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <div style={{ position: 'fixed', inset: 0, width: '100vw', height: '100vh', background: 'var(--color-primary-dark)', overflow: 'hidden' }}>
       {/* Styles scopés : bascule 1 colonne (mobile) → 2 colonnes (desktop), comme le hero de Home */}
@@ -301,9 +323,9 @@ export default function Login() {
                 <label className="input-label" style={{ marginBottom: 0 }}>
                   {t('auth.login.password')}
                 </label>
-                <a href="#" style={{
+                <a href="#" onClick={handleForgotPassword} style={{
                   fontSize: 12, color: 'var(--color-accent)',
-                  textDecoration: 'none', fontWeight: 600,
+                  textDecoration: 'none', fontWeight: 600, cursor: 'pointer'
                 }}>
                   {t('auth.login.forgot')}
                 </a>
