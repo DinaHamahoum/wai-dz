@@ -567,12 +567,12 @@ export default function Register() {
                 </div>
 
                 {/* Buttons */}
-                <div style={{ display: 'flex', gap: 8, marginTop: 2, flexDirection: isRTL ? 'row-reverse' : 'row' }}>
+                <div style={{ display: 'flex', gap: 8, marginTop: 2, flexDirection: isRTL ? 'row-reverse' : 'row', flexWrap: 'wrap' }}>
                   <button
                     type="button"
                     onClick={() => { setStep(1); setError(''); }}
                     className="btn btn-outline-dark"
-                    style={{ flex: '0 0 auto', display: 'flex', alignItems: 'center', gap: 6, color: 'var(--color-primary)', borderColor: 'var(--color-border)' }}
+                    style={{ flex: '1 1 auto', display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 6, color: 'var(--color-primary)', borderColor: 'var(--color-border)' }}
                   >
                     {isRTL ? <ArrowRight size={15} /> : <ArrowLeft size={15} />}
                     {reg.back}
@@ -581,7 +581,7 @@ export default function Register() {
                     type="submit"
                     className="btn btn-forest"
                     disabled={loading}
-                    style={{ flex: 1, opacity: loading ? 0.85 : 1, cursor: loading ? 'not-allowed' : 'pointer' }}
+                    style={{ flex: '2 1 auto', display: 'flex', justifyContent: 'center', alignItems: 'center', opacity: loading ? 0.85 : 1, cursor: loading ? 'not-allowed' : 'pointer', minWidth: 160 }}
                   >
                     {loading ? (
                       <span style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}>
