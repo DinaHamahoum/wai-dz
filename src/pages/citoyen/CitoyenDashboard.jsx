@@ -308,6 +308,7 @@ export default function CitoyenDashboard() {
     { key: 'dashboard', label: c.nav.dashboard, icon: LayoutDashboard },
     { key: 'map', label: c.nav.map, icon: Map },
     { key: 'requests', label: c.nav.requests, icon: ClipboardList },
+    { key: 'reports', label: lang === 'fr' ? 'Signalements' : 'البلاغات', icon: AlertTriangle },
     { key: 'rewards', label: c.nav.rewards, icon: Gift },
     { key: 'profile', label: c.nav.profile, icon: User },
   ];
@@ -860,6 +861,86 @@ export default function CitoyenDashboard() {
                             : `تم التكفل من قِبَل : ${req.confirmed_by_nom}`}
                         </div>
                       )}
+                    </div>
+                  ))
+                )}
+              </HauteCard>
+            </div>
+          )}
+
+          {/* ── REPORTS TAB ── */}
+          {activeTab === 'reports' && (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 12 }}>
+                <PageHeading
+                  isRTL={isRTL}
+                  eyebrow={lang === 'fr' ? 'Suivi' : 'المتابعة'}
+                  title={lang === 'fr' ? 'Signalements' : 'البلاغات'}
+                  subtitle={lang === 'fr' ? 'Historique de vos signalements de conteneurs.' : 'سجل بلاغاتك عن الحاويات.'}
+                />
+                <button
+                  onClick={() => setIsReportModalOpen(true)}
+                  className="btn btn-forest"
+                  style={{ padding: '12px 22px', fontSize: '0.85rem' }}
+                >
+                  <Plus size={16} />
+                  <span>{lang === 'fr' ? 'Nouveau signalement' : 'بلاغ جديد'}</span>
+                </button>
+              </div>
+
+              <HauteCard style={{ padding: 26 }}>
+                {reports.length === 0 ? (
+                  <div style={{ textAlign: 'center', padding: '48px 0' }}>
+                    <AlertTriangle size={40} color="var(--color-text-muted)" style={{ marginBottom: 16, opacity: 0.4 }} />
+                    <p style={{ fontSize: 14, color: 'var(--color-text-muted)' }}>
+                      {lang === 'fr' ? 'Aucun signalement pour le moment.' : 'لا توجد بلاغات حتى الآن.'}
+                    </p>
+                  </div>
+                ) : (
+                  reports.map((rep, idx) => (
+                    <div key={rep.id} style={{
+                      padding: '18px 0',
+                      borderBottom: idx < reports.length - 1 ? '1px dashed var(--color-border)' : 'none',
+                    }}>
+                      <div style={{
+                        display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start',
+                        flexDirection: isRTL ? 'row-reverse' : 'row', gap: 12,
+                      }}>
+                        <div style={{ display: 'flex', gap: 14, alignItems: 'flex-start', flexDirection: isRTL ? 'row-reverse' : 'row', flex: 1, minWidth: 0 }}>
+                          {/* Photo si disponible */}
+                          {rep.photo_url ? (
+                            <img
+                              src={rep.photo_url}
+                              alt="photo signalement"
+                              style={{ width: 56, height: 56, borderRadius: 8, objectFit: 'cover', flexShrink: 0, border: '1px solid var(--color-border)' }}
+                            />
+                          ) : (
+                            <div style={{
+                              width: 44, height: 44, borderRadius: '50%',
+                              background: '#fef2f2', color: '#dc2626',
+                              display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
+                            }}>
+                              <AlertTriangle size={18} strokeWidth={1.5} />
+                            </div>
+                          )}
+                          <div style={{ textAlign: isRTL ? 'right' : 'left', minWidth: 0, flex: 1 }}>
+                            <p style={{ fontWeight: 600, fontSize: '1rem', color: 'var(--color-primary)', marginBottom: 4, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                              {rep.description?.split('\n')[0] || (lang === 'fr' ? 'Signalement' : 'بلاغ')}
+                            </p>
+                            {rep.description?.includes('\n') && (
+                              <p style={{ fontSize: 13, color: 'var(--color-text-secondary)', lineHeight: 1.5, marginBottom: 4 }}>
+                                {rep.description.split('\n').slice(1).join(' ')}
+                              </p>
+                            )}
+                            <p style={{ fontSize: 12, color: 'var(--color-text-muted)', marginTop: 4 }}>
+                              {formatDate(rep.created_at)}
+                            </p>
+                          </div>
+                        </div>
+                        <span className={`status-chip ${getStatusClass(rep.statut)}`} style={{ flexShrink: 0 }}>
+                          {getStatusLabel(rep.statut)}
+                        </span>
+                      </div>
                     </div>
                   ))
                 )}
