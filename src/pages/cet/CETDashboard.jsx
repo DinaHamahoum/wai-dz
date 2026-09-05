@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import {
   Trash2, MapPin, Clock, Check, CheckCircle2, AlertCircle,
   RefreshCw, AlertTriangle, Package, Loader2, Phone, LogOut, Menu, X,
-  BatteryMedium, BarChart3
+  BatteryMedium, BarChart3, User
 } from 'lucide-react';
 import { supabase } from '../../lib/supabase';
 import { useLanguage } from '../../i18n/LanguageContext';
@@ -195,9 +195,17 @@ export default function CETDashboard() {
   const handleUpdateStatus = async (demandeId, newStatut) => {
     setActionLoadingId(demandeId);
     try {
+      const updatePayload = { statut: newStatut };
+      
+      if (newStatut === "confirmee") {
+        updatePayload.confirmed_by_id = session?.user?.id || null;
+        updatePayload.confirmed_by_nom = cetNom || null;
+        updatePayload.confirmed_at = new Date().toISOString();
+      }
+
       const { data, error } = await supabase
         .from('demandes_collecte')
-        .update({ statut: newStatut })
+        .update(updatePayload)
         .eq('id', demandeId)
         .select();
 
@@ -230,7 +238,19 @@ export default function CETDashboard() {
         ]);
       }
 
-      setDemandes((prev) => prev.map((d) => (d.id === demandeId ? { ...d, statut: newStatut } : d)));
+      setDemandes((prev) => prev.map((d) => 
+        d.id === demandeId 
+          ? { 
+              ...d, 
+              statut: newStatut,
+              ...(newStatut === "confirmee" && {
+                confirmed_by_id: session?.user?.id || null,
+                confirmed_by_nom: cetNom || null,
+                confirmed_at: new Date().toISOString(),
+              })
+            } 
+          : d
+      ));
     } catch (err) {
       alert(`Erreur: ${err.message}`);
     } finally {
@@ -259,6 +279,7 @@ export default function CETDashboard() {
     { key: 'signalements', label: lang === 'fr' ? 'Signalements réclamations' : 'البلاغات والشكاوى', icon: AlertTriangle },
     { key: 'remplissage', label: lang === 'fr' ? 'Taux de remplissage' : 'مستوى التعبئة', icon: BatteryMedium },
     { key: 'stats', label: lang === 'fr' ? 'Statistiques & Bilan' : 'الإحصائيات والحصيلة', icon: BarChart3 },
+    { key: 'profile', label: lang === 'fr' ? 'Profil' : 'حسابي', icon: User },
   ];
 
   /* ═══════════════════════ RENDER ═══════════════════════ */
@@ -576,8 +597,23 @@ export default function CETDashboard() {
                               {d.quantite && <> · <strong>{d.quantite}</strong></>}
                             </p>
                             {d.description && (
-                              <div style={{ marginTop: 8, fontSize: 13, color: 'var(--color-text-secondary)', background: 'var(--color-bg)', padding: '8px 12px', borderRadius: 'var(--radius-sm)' }}>
+                              <div style={{ marginTop: 8, fontSize: 13, color: 'var(--color-text-secondary)', background: 'var(--color-bg)', padding: '8px 12px', borderRadius: 'var(--radius-sm)', borderLeft: '3px solid var(--color-accent)' }}>
+                                <span style={{ fontSize: 11, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--color-accent)', display: 'block', marginBottom: 3 }}>
+                                  {lang === 'fr' ? 'Description' : 'الوصف'}
+                                </span>
                                 {d.description}
+                              </div>
+                            )}
+                            {/* Société confirmante — visible par tous les centres CET */}
+                            {(isConfirmee || isTerminee) && d.confirmed_by_nom && (
+                              <div style={{
+                                marginTop: 8, fontSize: 12, display: 'flex', alignItems: 'center', gap: 6,
+                                color: '#4f46e5', fontWeight: 600,
+                              }}>
+                                <Check size={13} />
+                                {lang === 'fr'
+                                  ? `Pris en charge par : ${d.confirmed_by_nom}`
+                                  : `تم التكفل من قِبَل : ${d.confirmed_by_nom}`}
                               </div>
                             )}
                           </div>
@@ -905,6 +941,70 @@ export default function CETDashboard() {
                 </div>
               )}
             </>
+          )}
+
+          {/* ══ TAB: PROFILE ══ */}
+          {activeTab === 'profile' && (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
+              <div style={{ marginBottom: 16 }}>
+                <p style={{ fontSize: 11, fontWeight: 700, color: 'var(--color-accent)', textTransform: 'uppercase', letterSpacing: '0.15em', marginBottom: 4 }}>
+                  {isRTL ? 'الحساب' : 'Compte'}
+                </p>
+                <h1 style={{ fontSize: '1.6rem', fontWeight: 800, color: 'var(--color-primary)', margin: 0 }}>
+                  {isRTL ? 'الملف الشخصي' : 'Profil'}
+                </h1>
+                <p style={{ fontSize: 13, color: 'var(--color-text-secondary)', marginTop: 4 }}>
+                  {isRTL ? 'معلومات حسابك كمركز ردم تقني.' : 'Informations de votre compte Centre CET.'}
+                </p>
+              </div>
+
+              <div style={{
+                background: '#fff', border: '1px solid var(--color-border)', borderRadius: 'var(--radius-lg)',
+                padding: 32, boxShadow: 'var(--shadow-sm)'
+              }}>
+                <div style={{
+                  display: 'flex', alignItems: 'center', gap: 20, marginBottom: 28, paddingBottom: 28,
+                  borderBottom: '1px solid var(--color-border)',
+                  flexDirection: isRTL ? 'row-reverse' : 'row',
+                }}>
+                  <div style={{
+                    width: 64, height: 64, borderRadius: '50%',
+                    background: 'var(--color-accent-light)', color: 'var(--color-accent)',
+                    border: '1px solid var(--color-border-gold)',
+                    display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
+                  }}>
+                    <User size={28} strokeWidth={1.5} />
+                  </div>
+                  <div style={{ textAlign: isRTL ? 'right' : 'left' }}>
+                    <p style={{
+                      fontWeight: 700, fontSize: '1.4rem', color: 'var(--color-primary)', margin: 0
+                    }}>{cetNom}</p>
+                    <p style={{ fontSize: 13, color: 'var(--color-text-secondary)', marginTop: 4 }}>
+                      {isRTL ? 'مركز ردم تقني (CET)' : 'Centre d\'Enfouissement Technique (CET)'}
+                    </p>
+                  </div>
+                </div>
+
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+                  {[
+                    { label: isRTL ? 'نوع الحساب' : 'Type de compte', value: isRTL ? 'مركز ردم تقني (CET)' : 'Centre CET' },
+                    { label: isRTL ? 'رقم الاعتماد' : 'Numéro d\'agrément', value: profile?.numero_agrement || session?.user?.user_metadata?.numero_agrement || '—' },
+                    { label: isRTL ? 'البريد الإلكتروني' : 'Email', value: session?.user?.email || '—' },
+                    { label: isRTL ? 'الهاتف' : 'Téléphone', value: profile?.telephone || session?.user?.user_metadata?.telephone || '—' },
+                    { label: isRTL ? 'الولاية' : 'Wilaya', value: profile?.wilaya || session?.user?.user_metadata?.wilaya || '—' },
+                  ].map((field, i) => (
+                    <div key={i} style={{
+                      padding: '14px 18px', borderRadius: 'var(--radius-sm)',
+                      background: 'var(--color-bg)', border: '1px solid var(--color-border)',
+                      textAlign: isRTL ? 'right' : 'left',
+                    }}>
+                      <p style={{ fontSize: 11, color: 'var(--color-text-muted)', marginBottom: 4, fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.08em' }}>{field.label}</p>
+                      <p style={{ fontSize: 15, color: 'var(--color-text)', fontWeight: 600, margin: 0 }}>{field.value}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
           )}
 
         </main>

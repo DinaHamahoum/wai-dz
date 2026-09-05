@@ -3,7 +3,7 @@ import {
   LayoutDashboard, Map, AlertTriangle, Package, ShoppingCart,
   LogOut, Menu, X, Landmark, RefreshCw, Clock, CheckCircle2,
   FileText, Check, Loader2, Plus, Sparkles, Sliders, ShoppingBag,
-  Compass, Minus, ArrowRight
+  Compass, Minus, ArrowRight, User
 } from 'lucide-react';
 import { useLanguage } from '../../i18n/LanguageContext';
 import { useAuth } from '../../contexts/AuthContext';
@@ -196,6 +196,7 @@ export default function CommuneDashboard() {
     { key: 'signalements',label: isRTL ? 'البلاغات' : 'Signalements',              icon: AlertTriangle, badge: pendingReports || null },
     { key: 'commander',   label: isRTL ? 'طلب حاوية' : 'Commander un Conteneur',  icon: ShoppingCart },
     { key: 'my_requests', label: isRTL ? 'طلباتي' : 'Mes Demandes',               icon: FileText, badge: pendingRequests || null },
+    { key: 'profile',     label: isRTL ? 'حسابي' : 'Profil',                      icon: User },
   ];
 
   const card = (title, value, Icon, color, sub) => (
@@ -927,6 +928,69 @@ export default function CommuneDashboard() {
                   })}
                 </div>
               )}
+            </div>
+          )}
+
+          {/* ══ TAB: PROFILE ══ */}
+          {activeTab === 'profile' && (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
+              <div style={{ marginBottom: 16 }}>
+                <p style={{ fontSize: 11, fontWeight: 700, color: 'var(--color-accent)', textTransform: 'uppercase', letterSpacing: '0.15em', marginBottom: 4 }}>
+                  {isRTL ? 'الحساب' : 'Compte'}
+                </p>
+                <h1 style={{ fontSize: '1.6rem', fontWeight: 800, color: 'var(--color-primary)', margin: 0 }}>
+                  {isRTL ? 'الملف الشخصي' : 'Profil'}
+                </h1>
+                <p style={{ fontSize: 13, color: 'var(--color-text-secondary)', marginTop: 4 }}>
+                  {isRTL ? 'معلومات حساب البلدية.' : 'Informations de votre compte commune.'}
+                </p>
+              </div>
+
+              <div style={{
+                background: '#fff', border: '1px solid var(--color-border)', borderRadius: 'var(--radius-lg)',
+                padding: 32, boxShadow: 'var(--shadow-sm)'
+              }}>
+                <div style={{
+                  display: 'flex', alignItems: 'center', gap: 20, marginBottom: 28, paddingBottom: 28,
+                  borderBottom: '1px solid var(--color-border)',
+                  flexDirection: isRTL ? 'row-reverse' : 'row',
+                }}>
+                  <div style={{
+                    width: 64, height: 64, borderRadius: '50%',
+                    background: 'var(--color-accent-light)', color: 'var(--color-accent)',
+                    border: '1px solid var(--color-border-gold)',
+                    display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
+                  }}>
+                    <User size={28} strokeWidth={1.5} />
+                  </div>
+                  <div style={{ textAlign: isRTL ? 'right' : 'left' }}>
+                    <p style={{
+                      fontWeight: 700, fontSize: '1.4rem', color: 'var(--color-primary)', margin: 0
+                    }}>{communeNom}</p>
+                    <p style={{ fontSize: 13, color: 'var(--color-text-secondary)', marginTop: 4 }}>
+                      {isRTL ? 'إدارة البلدية' : 'Administration Communale'}
+                    </p>
+                  </div>
+                </div>
+
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+                  {[
+                    { label: isRTL ? 'نوع الحساب' : 'Type de compte', value: isRTL ? 'بلدية' : 'Commune' },
+                    { label: isRTL ? 'البريد الإلكتروني' : 'Email', value: communeEmail || '—' },
+                    { label: isRTL ? 'الهاتف' : 'Téléphone', value: communeTel || '—' },
+                    { label: isRTL ? 'الولاية' : 'Wilaya', value: communeWilaya || '—' },
+                  ].map((field, i) => (
+                    <div key={i} style={{
+                      padding: '14px 18px', borderRadius: 'var(--radius-sm)',
+                      background: 'var(--color-bg)', border: '1px solid var(--color-border)',
+                      textAlign: isRTL ? 'right' : 'left',
+                    }}>
+                      <p style={{ fontSize: 11, color: 'var(--color-text-muted)', marginBottom: 4, fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.08em' }}>{field.label}</p>
+                      <p style={{ fontSize: 15, color: 'var(--color-text)', fontWeight: 600, margin: 0 }}>{field.value}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
             </div>
           )}
 

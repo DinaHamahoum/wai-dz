@@ -221,7 +221,7 @@ export default function CitoyenDashboard() {
           supabase.from('demandes_collecte').select('*', { count: 'exact', head: true }).eq('user_id', userId),
           supabase.from('reclamations').select('*', { count: 'exact', head: true }).eq('user_id', userId),
           supabase.from('demandes_collecte').select('*', { count: 'exact', head: true }).eq('user_id', userId).eq('statut', 'terminee'),
-          supabase.from('demandes_collecte').select('id, type_dechet, quantite, statut, created_at').eq('user_id', userId).order('created_at', { ascending: false }).limit(10),
+          supabase.from('demandes_collecte').select('id, type_dechet, quantite, statut, created_at, description, confirmed_by_nom').eq('user_id', userId).order('created_at', { ascending: false }).limit(10),
           supabase.from('reclamations').select('id, description, statut, created_at').eq('user_id', userId).order('created_at', { ascending: false }).limit(10),
           supabase.from('containers_with_coords').select('id, nom, statut, capacite, latitude, longitude'),
           supabase.from('recompenses').select('*').eq('user_id', userId).order('created_at', { ascending: false }),
@@ -279,7 +279,7 @@ export default function CitoyenDashboard() {
       const [reqAllRes, reqDoneRes, reqListRes, repAllRes, repListRes, rewardsRes] = await Promise.all([
         supabase.from('demandes_collecte').select('*', { count: 'exact', head: true }).eq('user_id', userId),
         supabase.from('demandes_collecte').select('*', { count: 'exact', head: true }).eq('user_id', userId).eq('statut', 'terminee'),
-        supabase.from('demandes_collecte').select('id, type_dechet, quantite, statut, created_at').eq('user_id', userId).order('created_at', { ascending: false }).limit(10),
+        supabase.from('demandes_collecte').select('id, type_dechet, quantite, statut, created_at, description, confirmed_by_nom').eq('user_id', userId).order('created_at', { ascending: false }).limit(10),
         supabase.from('reclamations').select('*', { count: 'exact', head: true }).eq('user_id', userId),
         supabase.from('reclamations').select('id, description, statut, created_at').eq('user_id', userId).order('created_at', { ascending: false }).limit(10),
         supabase.from('recompenses').select('*').eq('user_id', userId).order('created_at', { ascending: false }),
@@ -801,29 +801,65 @@ export default function CitoyenDashboard() {
                     <div key={req.id} style={{
                       padding: '16px 0',
                       borderBottom: idx < requests.length - 1 ? '1px dashed var(--color-border)' : 'none',
-                      display: 'flex', justifyContent: 'space-between', alignItems: 'center',
-                      flexDirection: isRTL ? 'row-reverse' : 'row',
                     }}>
-                      <div style={{ display: 'flex', gap: 14, alignItems: 'center', flexDirection: isRTL ? 'row-reverse' : 'row' }}>
-                        <div style={{
-                          width: 40, height: 40, borderRadius: '50%',
-                          background: 'var(--color-accent-light)', color: 'var(--color-accent)',
-                          display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
-                        }}>
-                          <Package size={18} strokeWidth={1.5} />
+                      <div style={{
+                        display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+                        flexDirection: isRTL ? 'row-reverse' : 'row',
+                        marginBottom: (req.description || req.confirmed_by_nom) ? 10 : 0,
+                      }}>
+                        <div style={{ display: 'flex', gap: 14, alignItems: 'center', flexDirection: isRTL ? 'row-reverse' : 'row' }}>
+                          <div style={{
+                            width: 40, height: 40, borderRadius: '50%',
+                            background: 'var(--color-accent-light)', color: 'var(--color-accent)',
+                            display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
+                          }}>
+                            <Package size={18} strokeWidth={1.5} />
+                          </div>
+                          <div style={{ textAlign: isRTL ? 'right' : 'left' }}>
+                            <p style={{ fontWeight: 600, fontSize: '1rem', color: 'var(--color-primary)' }}>
+                              {req.type_dechet || '—'}
+                            </p>
+                            <p style={{ fontSize: 13, color: 'var(--color-text-secondary)', marginTop: 2 }}>
+                              {req.quantite ? `${req.quantite} · ` : ''}{formatDate(req.created_at)}
+                            </p>
+                          </div>
                         </div>
-                        <div style={{ textAlign: isRTL ? 'right' : 'left' }}>
-                          <p style={{ fontWeight: 600, fontSize: '1rem', color: 'var(--color-primary)' }}>
-                            {req.type_dechet || '—'}
-                          </p>
-                          <p style={{ fontSize: 13, color: 'var(--color-text-secondary)', marginTop: 2 }}>
-                            {req.quantite ? `${req.quantite} · ` : ''}{formatDate(req.created_at)}
-                          </p>
-                        </div>
+                        <span className={`status-chip ${getStatusClass(req.statut)}`}>
+                          {getStatusLabel(req.statut)}
+                        </span>
                       </div>
-                      <span className={`status-chip ${getStatusClass(req.statut)}`}>
-                        {getStatusLabel(req.statut)}
-                      </span>
+                      {/* Description de la demande */}
+                      {req.description && (
+                        <div style={{
+                          marginTop: 8, fontSize: 13,
+                          color: 'var(--color-text-secondary)',
+                          background: 'var(--color-bg)',
+                          padding: '8px 12px',
+                          borderRadius: 'var(--radius-sm)',
+                          borderLeft: isRTL ? 'none' : '3px solid var(--color-accent)',
+                          borderRight: isRTL ? '3px solid var(--color-accent)' : 'none',
+                          textAlign: isRTL ? 'right' : 'left',
+                        }}>
+                          <span style={{ fontSize: 11, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--color-accent)', display: 'block', marginBottom: 3 }}>
+                            {lang === 'fr' ? 'Description' : 'الوصف'}
+                          </span>
+                          {req.description}
+                        </div>
+                      )}
+                      {/* Société qui a confirmé la demande */}
+                      {req.confirmed_by_nom && (
+                        <div style={{
+                          marginTop: 8, fontSize: 12, display: 'flex', alignItems: 'center', gap: 6,
+                          color: '#4f46e5', fontWeight: 600,
+                          flexDirection: isRTL ? 'row-reverse' : 'row',
+                          justifyContent: isRTL ? 'flex-end' : 'flex-start',
+                        }}>
+                          <ChevronRight size={13} />
+                          {lang === 'fr'
+                            ? `Pris en charge par : ${req.confirmed_by_nom}`
+                            : `تم التكفل من قِبَل : ${req.confirmed_by_nom}`}
+                        </div>
+                      )}
                     </div>
                   ))
                 )}

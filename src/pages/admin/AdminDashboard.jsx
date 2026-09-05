@@ -598,9 +598,11 @@ export default function AdminDashboard() {
                         <span style={{ fontSize: 11, fontWeight: 700, padding: '3px 8px', borderRadius: 4, background: isPending ? '#fee2e2' : '#dcfce7', color: isPending ? '#dc2626' : '#16a34a' }}>
                           {isPending ? (isRTL ? 'قيد المعالجة' : 'En attente') : (isRTL ? 'تم الحل' : 'Résolu')}
                         </span>
-                        <button onClick={() => handleUpdateSignalement(sig.id, isPending ? 'resolu' : 'en_attente')} className={isPending ? 'btn btn-forest' : 'btn btn-outline-dark'} style={{ fontSize: 12, padding: '5px 10px' }}>
-                          {isPending ? (isRTL ? '✓ حل' : '✓ Résolu') : (isRTL ? 'إعادة' : 'Rouvrir')}
-                        </button>
+                        {isPending && (
+                          <button onClick={() => handleUpdateSignalement(sig.id, 'resolu')} className="btn btn-forest" style={{ fontSize: 12, padding: '5px 10px' }}>
+                            {isRTL ? '✓ حل' : '✓ Résolu'}
+                          </button>
+                        )}
                       </div>
                     </div>
                   );

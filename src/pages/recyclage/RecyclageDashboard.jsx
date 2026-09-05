@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import {
   Building, Dumbbell, User, Phone, Check, MapPin, Clock,
   RefreshCw, Package, CheckCircle2, AlertCircle, Recycle, Plus,
-  LogOut, Menu, X
+  LogOut, Menu, X, TrendingUp
 } from "lucide-react";
 import { supabase } from "../../lib/supabase";
 import { useLanguage } from "../../i18n/LanguageContext";
@@ -116,9 +116,19 @@ export default function RecyclageDashboard() {
   const handleUpdateStatus = async (demandeId, newStatut) => {
     setActionLoadingId(demandeId);
     try {
+      // Payload de base
+      const updatePayload = { statut: newStatut };
+
+      // Si la société confirme la demande, on enregistre son identité et la date
+      if (newStatut === "confirmee") {
+        updatePayload.confirmed_by_id = session?.user?.id || null;
+        updatePayload.confirmed_by_nom = userSocieteNom || null;
+        updatePayload.confirmed_at = new Date().toISOString();
+      }
+
       const { data, error } = await supabase
         .from("demandes_collecte")
-        .update({ statut: newStatut })
+        .update(updatePayload)
         .eq("id", demandeId)
         .select();
 
@@ -152,7 +162,19 @@ export default function RecyclageDashboard() {
       }
 
       setDemandes((prev) =>
-        prev.map((d) => (d.id === demandeId ? { ...d, statut: newStatut } : d))
+        prev.map((d) =>
+          d.id === demandeId
+            ? {
+                ...d,
+                statut: newStatut,
+                ...(newStatut === "confirmee" && {
+                  confirmed_by_id: session?.user?.id || null,
+                  confirmed_by_nom: userSocieteNom || null,
+                  confirmed_at: new Date().toISOString(),
+                }),
+              }
+            : d
+        )
       );
     } catch (err) {
       alert(`Erreur: ${err.message}`);
@@ -178,7 +200,8 @@ export default function RecyclageDashboard() {
 
   const navItems = [
     { key: "demandes", label: lang === "fr" ? "Demandes de collecte" : "طلبات الجمع", icon: Recycle },
-    { key: "stats", label: lang === "fr" ? "Statistiques & Impact" : "الإحصائيات والأثر", icon: Package },
+    { key: "stats", label: lang === "fr" ? "Statistiques & Impact" : "الإحصائيات والأثر", icon: TrendingUp },
+    { key: "profile", label: lang === "fr" ? "Profil" : "حسابي", icon: User },
   ];
 
   return (
@@ -509,8 +532,23 @@ export default function RecyclageDashboard() {
                           })()} · <strong>{d.quantite || "—"}</strong>
                         </p>
                         {d.description && (
-                          <div style={{ marginTop: 8, fontSize: 13, color: 'var(--color-text-secondary)', background: 'var(--color-bg)', padding: '8px 12px', borderRadius: 'var(--radius-sm)' }}>
+                          <div style={{ marginTop: 8, fontSize: 13, color: 'var(--color-text-secondary)', background: 'var(--color-bg)', padding: '8px 12px', borderRadius: 'var(--radius-sm)', borderLeft: '3px solid var(--color-accent)' }}>
+                            <span style={{ fontSize: 11, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--color-accent)', display: 'block', marginBottom: 3 }}>
+                              {lang === 'fr' ? 'Description' : 'الوصف'}
+                            </span>
                             {d.description}
+                          </div>
+                        )}
+                        {/* Société confirmante — visible par toutes les sociétés */}
+                        {(isConfirmee || isTerminee) && d.confirmed_by_nom && (
+                          <div style={{
+                            marginTop: 8, fontSize: 12, display: 'flex', alignItems: 'center', gap: 6,
+                            color: '#4f46e5', fontWeight: 600,
+                          }}>
+                            <Check size={13} />
+                            {lang === 'fr'
+                              ? `Pris en charge par : ${d.confirmed_by_nom}`
+                              : `تم التكفل من قِبَل : ${d.confirmed_by_nom}`}
                           </div>
                         )}
                       </div>
@@ -626,6 +664,70 @@ export default function RecyclageDashboard() {
           )}
           </>
         )}
+
+          {/* ══ TAB: PROFILE ══ */}
+          {activeTab === 'profile' && (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
+              <div style={{ marginBottom: 16 }}>
+                <p style={{ fontSize: 11, fontWeight: 700, color: 'var(--color-accent)', textTransform: 'uppercase', letterSpacing: '0.15em', marginBottom: 4 }}>
+                  {isRTL ? 'الحساب' : 'Compte'}
+                </p>
+                <h1 style={{ fontSize: '1.6rem', fontWeight: 800, color: 'var(--color-primary)', margin: 0 }}>
+                  {isRTL ? 'الملف الشخصي' : 'Profil'}
+                </h1>
+                <p style={{ fontSize: 13, color: 'var(--color-text-secondary)', marginTop: 4 }}>
+                  {isRTL ? 'معلومات حسابك كشركة إعادة تدوير.' : 'Informations de votre compte entreprise de recyclage.'}
+                </p>
+              </div>
+
+              <div style={{
+                background: '#fff', border: '1px solid var(--color-border)', borderRadius: 'var(--radius-lg)',
+                padding: 32, boxShadow: 'var(--shadow-sm)'
+              }}>
+                <div style={{
+                  display: 'flex', alignItems: 'center', gap: 20, marginBottom: 28, paddingBottom: 28,
+                  borderBottom: '1px solid var(--color-border)',
+                  flexDirection: isRTL ? 'row-reverse' : 'row',
+                }}>
+                  <div style={{
+                    width: 64, height: 64, borderRadius: '50%',
+                    background: 'var(--color-accent-light)', color: 'var(--color-accent)',
+                    border: '1px solid var(--color-border-gold)',
+                    display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
+                  }}>
+                    <User size={28} strokeWidth={1.5} />
+                  </div>
+                  <div style={{ textAlign: isRTL ? 'right' : 'left' }}>
+                    <p style={{
+                      fontWeight: 700, fontSize: '1.4rem', color: 'var(--color-primary)', margin: 0
+                    }}>{userSocieteNom}</p>
+                    <p style={{ fontSize: 13, color: 'var(--color-text-secondary)', marginTop: 4 }}>
+                      {isRTL ? 'شركة إعادة تدوير معتمدة' : 'Société de recyclage agréée'}
+                    </p>
+                  </div>
+                </div>
+
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+                  {[
+                    { label: isRTL ? 'نوع الحساب' : 'Type de compte', value: isRTL ? 'شركة إعادة تدوير' : 'Entreprise de recyclage' },
+                    { label: isRTL ? 'رقم الاعتماد' : 'Numéro d\'agrément', value: profile?.numero_agrement || session?.user?.user_metadata?.numero_agrement || '—' },
+                    { label: isRTL ? 'البريد الإلكتروني' : 'Email', value: session?.user?.email || '—' },
+                    { label: isRTL ? 'الهاتف' : 'Téléphone', value: profile?.telephone || session?.user?.user_metadata?.telephone || '—' },
+                    { label: isRTL ? 'الولاية' : 'Wilaya', value: profile?.wilaya || session?.user?.user_metadata?.wilaya || '—' },
+                  ].map((field, i) => (
+                    <div key={i} style={{
+                      padding: '14px 18px', borderRadius: 'var(--radius-sm)',
+                      background: 'var(--color-bg)', border: '1px solid var(--color-border)',
+                      textAlign: isRTL ? 'right' : 'left',
+                    }}>
+                      <p style={{ fontSize: 11, color: 'var(--color-text-muted)', marginBottom: 4, fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.08em' }}>{field.label}</p>
+                      <p style={{ fontSize: 15, color: 'var(--color-text)', fontWeight: 600, margin: 0 }}>{field.value}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          )}
 
         </main>
       </div>
