@@ -639,7 +639,7 @@ export default function CETDashboard() {
                               {(() => {
                                 const t = {
                                   'Plastique': 'بلاستيك', 'Carton/Papier': 'كرتون / ورق', 'Verre': 'زجاج',
-                                  'Métal': 'معدن', 'Électronique': 'إلكترونيات', 'Arabe': 'عربي (ورق/كتب)',
+                                  'Métal': 'معدن', 'Électronique': 'إلكترونيات',
                                   'Organique': 'عضوي', 'Encombrant': 'مخلفات ضخمة (أثاث، أجهزة)',
                                   'Ménager': 'نفايات منزلية', 'Médical': 'نفايات طبية', 'Chimique': 'نفايات كيميائية / خطرة',
                                   'BTP': 'نفايات البناء والأنقاض', 'Autre': 'آخر'

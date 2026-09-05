@@ -270,7 +270,7 @@ export default function RequestCollectionModal({ isOpen, onClose, userId, onSucc
                       <option value="Verre">{lang === 'fr' ? 'Verre' : 'زجاج'}</option>
                       <option value="Métal">{lang === 'fr' ? 'Métal' : 'معدن'}</option>
                       <option value="Électronique">{lang === 'fr' ? 'Électronique (D3E)' : 'إلكترونيات'}</option>
-                      <option value="Arabe">{lang === 'fr' ? 'Arabe (Papier/Livres)' : 'عربي (ورق/كتب)'}</option>
+                      <option value="Autre">{lang === 'fr' ? 'Autre' : 'آخر'}</option>
                     </>
                   ) : (
                     <>
