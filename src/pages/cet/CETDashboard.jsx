@@ -7,6 +7,7 @@ import {
 import { supabase } from '../../lib/supabase';
 import { useLanguage } from '../../i18n/LanguageContext';
 import { useAuth } from '../../contexts/AuthContext';
+import LanguageSwitcher from '../../components/LanguageSwitcher';
 
 /* ── Relative time helper ── */
 function formatTimeAgo(isoString, lang) {
@@ -388,7 +389,8 @@ export default function CETDashboard() {
           })}
 
           {/* Sign Out */}
-          <div style={{ marginTop: 'auto', paddingTop: 16, borderTop: '1px solid var(--color-border)' }}>
+          <div style={{ marginTop: 'auto', paddingTop: 16, borderTop: '1px solid var(--color-border)', display: 'flex', flexDirection: 'column', gap: 4 }}>
+            <LanguageSwitcher isRTL={isRTL} />
             <button
               onClick={signOut}
               style={{

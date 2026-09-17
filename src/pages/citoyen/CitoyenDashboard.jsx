@@ -1,5 +1,6 @@
 import { useState, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
+import LanguageSwitcher from '../../components/LanguageSwitcher';
 import {
   LayoutDashboard, Map, ClipboardList, Gift, User,
   AlertTriangle, Recycle, Star, ChevronRight, Clock,
@@ -425,22 +426,24 @@ export default function CitoyenDashboard() {
             );
           })}
 
-          <button
-            style={{
-              display: 'flex', alignItems: 'center', gap: 10,
-              width: '100%', padding: '11px 14px',
-              background: 'transparent', border: 'none', cursor: 'pointer',
-              fontFamily: 'inherit', fontSize: 13, fontWeight: 400,
-              color: '#b45252', marginTop: 'auto',
-              borderTop: '1px solid var(--color-border)',
-              flexDirection: isRTL ? 'row-reverse' : 'row',
-              textAlign: isRTL ? 'right' : 'left',
-            }}
-            onClick={signOut}
-          >
-            <LogOut size={16} strokeWidth={1.5} />
-            {t('nav.logout')}
-          </button>
+          <div style={{ marginTop: 'auto', paddingTop: 12, borderTop: '1px solid var(--color-border)', display: 'flex', flexDirection: 'column', gap: 4 }}>
+            <LanguageSwitcher isRTL={isRTL} />
+            <button
+              style={{
+                display: 'flex', alignItems: 'center', gap: 10,
+                width: '100%', padding: '11px 14px',
+                background: 'transparent', border: 'none', cursor: 'pointer',
+                fontFamily: 'inherit', fontSize: 13, fontWeight: 400,
+                color: '#b45252',
+                flexDirection: isRTL ? 'row-reverse' : 'row',
+                textAlign: isRTL ? 'right' : 'left',
+              }}
+              onClick={signOut}
+            >
+              <LogOut size={16} strokeWidth={1.5} />
+              {t('nav.logout')}
+            </button>
+          </div>
         </aside>
 
         {/* Overlay mobile */}

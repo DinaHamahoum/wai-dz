@@ -10,6 +10,7 @@ import { useLanguage } from '../../i18n/LanguageContext';
 import { useAuth } from '../../contexts/AuthContext';
 import { containerRequestsService } from '../../services/containerRequestsService';
 import ContainersMap from '../../components/Map/ContainersMap';
+import LanguageSwitcher from '../../components/LanguageSwitcher';
 
 function formatTimeAgo(isoString, lang) {
   if (!isoString) return '—';
@@ -308,7 +309,8 @@ export default function AdminDashboard() {
             })}
           </div>
 
-          <div style={{ paddingTop: 16, borderTop: '1px solid var(--color-border)' }}>
+          <div style={{ paddingTop: 16, borderTop: '1px solid var(--color-border)', display: 'flex', flexDirection: 'column', gap: 4 }}>
+            <LanguageSwitcher isRTL={isRTL} />
             <button onClick={signOut} style={{
               display: 'flex', alignItems: 'center', gap: 10, width: '100%', padding: '11px 14px',
               background: 'transparent', border: 'none', cursor: 'pointer', fontFamily: 'inherit',

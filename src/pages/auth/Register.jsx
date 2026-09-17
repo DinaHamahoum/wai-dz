@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import {
   User, Landmark, GraduationCap, Dumbbell, Building2, Heart,
@@ -77,9 +77,23 @@ export default function Register() {
     password: '', confirmPassword: '',
   });
 
+  /* Ref on the Next button — for auto-scroll on mobile */
+  const nextBtnRef = useRef(null);
+
   const handleChange = (e) => {
     setForm(f => ({ ...f, [e.target.name]: e.target.value }));
     setError('');
+  };
+
+  /* Select a type and auto-scroll to the Next button on mobile */
+  const handleSelectType = (key) => {
+    setSelectedType(key);
+    setError('');
+    setTimeout(() => {
+      if (nextBtnRef.current) {
+        nextBtnRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+    }, 80);
   };
 
   const handleStep1 = () => {
@@ -177,7 +191,6 @@ export default function Register() {
 
   return (
     <div style={{ position: 'fixed', inset: 0, width: '100vw', height: '100vh', background: 'var(--color-primary-dark)', overflow: 'hidden' }}>
-      {/* Styles scopés : bascule 1 colonne (mobile) → 2 colonnes (desktop), comme le hero de Home */}
       <style>{`
         .auth-split { display: grid; grid-template-columns: 1fr; height: 100vh; width: 100vw; overflow: hidden; }
         .auth-visual { display: none; }
@@ -196,11 +209,12 @@ export default function Register() {
           .auth-visual { display: flex !important; height: 100vh; position: relative; overflow: hidden; }
           .auth-form-panel { height: 100vh; overflow-y: auto; }
         }
+        .type-card { transition: transform 0.2s, box-shadow 0.2s; }
         .type-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-lg); }
       `}</style>
 
       <div className="auth-split">
-        {/* ── Panneau visuel (image fixe en background + vignette sombre), masqué en mobile — à gauche pour équilibrer Login ── */}
+        {/* ── Panneau visuel masqué en mobile ── */}
         <div className="auth-visual" style={{
           position: 'relative',
           minHeight: '100vh',
@@ -221,13 +235,9 @@ export default function Register() {
           }} />
           <div style={{ position: 'relative', zIndex: 1, padding: '0 40px 48px', color: '#ffffff', direction: isRTL ? 'rtl' : 'ltr', textAlign: isRTL ? 'right' : 'left' }}>
             <span style={{
-              display: 'inline-block',
-              fontSize: 10,
-              fontWeight: 700,
-              letterSpacing: '0.18em',
-              textTransform: 'uppercase',
-              color: '#79C3A6',
-              marginBottom: 10,
+              display: 'inline-block', fontSize: 10, fontWeight: 700,
+              letterSpacing: '0.18em', textTransform: 'uppercase',
+              color: '#79C3A6', marginBottom: 10,
             }}>
               {t('home.rewards.subtitle')}
             </span>
@@ -236,10 +246,8 @@ export default function Register() {
               fontSize: 'clamp(1.3rem, 1.8vw, 1.7rem)',
               fontWeight: isRTL ? 800 : 400,
               fontStyle: isRTL ? 'normal' : 'italic',
-              lineHeight: 1.22,
-              marginBottom: 10,
-              textShadow: '0 4px 20px rgba(0,0,0,0.9)',
-              maxWidth: 360,
+              lineHeight: 1.22, marginBottom: 10,
+              textShadow: '0 4px 20px rgba(0,0,0,0.9)', maxWidth: 360,
             }}>
               {t('home.rewards.title')}
             </h2>
@@ -252,66 +260,80 @@ export default function Register() {
         {/* ── Panneau formulaire ── */}
         <div className="auth-form-panel" style={{ order: isRTL ? 1 : 2 }}>
         <div style={{ width: '100%', maxWidth: step === 1 ? 560 : 420 }}>
-          {/* Logo + titre */}
-          <div style={{ textAlign: 'center', marginBottom: 18 }}>
-            <Link to="/" style={{ textDecoration: 'none', display: 'inline-block', marginBottom: 10 }}>
-              <div className="logo-badge" style={{ transform: 'scale(0.8)' }}>
-                <img src={logo} alt="Logo" />
+
+          {/* ── NOUVEAU HEADER : logo inline + titre + steps ── */}
+          <div style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: 16,
+            marginBottom: 20,
+            direction: isRTL ? 'rtl' : 'ltr',
+          }}>
+            {/* Logo compact */}
+            <Link to="/" style={{ textDecoration: 'none', flexShrink: 0 }}>
+              <div style={{
+                width: 48, height: 48,
+                borderRadius: 12,
+                border: '1px solid var(--color-border-gold)',
+                background: '#fff',
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                boxShadow: '0 2px 8px rgba(14,110,87,0.10)',
+                overflow: 'hidden',
+                padding: 4,
+              }}>
+                <img src={logo} alt="WAI DZ" style={{ height: 36, width: 'auto', objectFit: 'contain' }} />
               </div>
             </Link>
 
-            <span style={{
-              display: 'inline-block',
-              fontSize: 10,
-              fontWeight: 700,
-              letterSpacing: '0.18em',
-              textTransform: 'uppercase',
-              color: 'var(--color-accent)',
-              marginBottom: 6,
-            }}>
-              {isRTL ? 'انضم إلينا' : 'Rejoindre'}
-            </span>
+            {/* Title block */}
+            <div style={{ flex: 1, minWidth: 0, textAlign: isRTL ? 'right' : 'left' }}>
+              <p style={{
+                fontSize: 10, fontWeight: 700, letterSpacing: '0.16em',
+                textTransform: 'uppercase', color: 'var(--color-accent)',
+                marginBottom: 2,
+              }}>
+                {isRTL ? 'انضم إلينا' : 'Rejoindre'}
+              </p>
+              <h1 style={{
+                fontSize: '1.25rem',
+                fontWeight: isRTL ? 700 : 400,
+                fontStyle: isRTL ? 'normal' : 'italic',
+                color: 'var(--color-primary)',
+                fontFamily: isRTL ? 'var(--font-arabic-display)' : 'var(--font-serif)',
+                lineHeight: 1.15,
+                margin: 0,
+              }}>
+                {reg.title}
+              </h1>
+            </div>
 
-            <h1 style={{
-              fontSize: '1.5rem',
-              fontWeight: isRTL ? 700 : 400,
-              fontStyle: isRTL ? 'normal' : 'italic',
-              color: 'var(--color-primary)',
-              marginBottom: 2,
-              fontFamily: isRTL ? 'var(--font-arabic)' : 'var(--font-serif)',
+            {/* Step pills */}
+            <div style={{
+              display: 'flex', alignItems: 'center', gap: 6, flexShrink: 0,
             }}>
-              {reg.title}
-            </h1>
-
-            {/* Step indicator — numérotation serif italique dorée, comme "Comment ça marche" sur Home */}
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10, marginTop: 12 }}>
               {[1, 2].map(s => (
-                <div key={s} style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-                  <span style={{
-                    fontFamily: isRTL ? 'var(--font-arabic-display)' : 'var(--font-serif)',
-                    fontSize: '1.1rem',
-                    fontStyle: isRTL ? 'normal' : 'italic',
-                    fontWeight: isRTL ? 700 : 400,
-                    color: s <= step ? 'var(--color-accent)' : 'var(--color-text-muted)',
-                    opacity: s <= step ? 1 : 0.5,
-                    transition: 'all var(--transition)',
+                <div key={s} style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                  <div style={{
+                    width: 28, height: 28, borderRadius: '50%',
+                    background: s <= step ? 'var(--color-primary)' : 'var(--color-border)',
+                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    transition: 'background 0.3s',
                   }}>
-                    0{s}
-                  </span>
-                  {s === 1 && (
                     <span style={{
-                      width: 24,
-                      height: 1,
+                      fontSize: 11, fontWeight: 700,
+                      color: s <= step ? '#fff' : 'var(--color-text-muted)',
+                    }}>{s}</span>
+                  </div>
+                  {s === 1 && (
+                    <div style={{
+                      width: 18, height: 2, borderRadius: 99,
                       background: step > 1 ? 'var(--color-accent)' : 'var(--color-border)',
-                      transition: 'background var(--transition)',
+                      transition: 'background 0.4s',
                     }} />
                   )}
                 </div>
               ))}
             </div>
-            <p style={{ fontSize: 12, color: 'var(--color-text-secondary)', marginTop: 4 }}>
-              {reg.step} {step} {reg.of} 2
-            </p>
           </div>
 
           {/* Card */}
@@ -367,7 +389,7 @@ export default function Register() {
                         key={key}
                         type="button"
                         className="type-card"
-                        onClick={() => { setSelectedType(key); setError(''); }}
+                        onClick={() => handleSelectType(key)}
                         style={{
                           display: 'flex', flexDirection: 'column', alignItems: 'center',
                           gap: 6, padding: '12px 8px',
@@ -403,7 +425,9 @@ export default function Register() {
                   })}
                 </div>
 
+                {/* Next button — ref for auto-scroll */}
                 <button
+                  ref={nextBtnRef}
                   onClick={handleStep1}
                   className="btn btn-forest"
                   style={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}
@@ -429,7 +453,7 @@ export default function Register() {
                   {reg.step2Title}
                 </p>
 
-                {/* Name field — label changes by type */}
+                {/* Name field */}
                 <div>
                   <label className="input-label" style={{ textAlign: isRTL ? 'right' : 'left' }}>
                     {isPersonal ? reg.fields.fullName : reg.fields.institutionName}
@@ -615,7 +639,7 @@ export default function Register() {
             </Link>
           </div>
         </div>
-      </div>
+        </div>
       </div>
     </div>
   );

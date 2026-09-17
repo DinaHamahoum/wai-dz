@@ -208,45 +208,59 @@ export default function Login() {
           padding: '32px 28px',
           direction: isRTL ? 'rtl' : 'ltr',
         }}>
-          {/* Logo */}
-          <div style={{ textAlign: 'center', marginBottom: 22 }}>
-            <Link to="/" style={{ textDecoration: 'none', display: 'inline-block', marginBottom: 12 }}>
-              <div className="logo-badge" style={{ transform: 'scale(0.8)' }}>
-                <img src={logo} alt="Logo" />
+          {/* NOUVEAU HEADER : logo inline + titre */}
+          <div style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: 16,
+            marginBottom: 26,
+            direction: isRTL ? 'rtl' : 'ltr',
+          }}>
+            {/* Logo compact */}
+            <Link to="/" style={{ textDecoration: 'none', flexShrink: 0 }}>
+              <div style={{
+                width: 52, height: 52,
+                borderRadius: 12,
+                border: '1px solid var(--color-border-gold)',
+                background: '#fff',
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                boxShadow: '0 2px 8px rgba(14,110,87,0.10)',
+                overflow: 'hidden',
+                padding: 4,
+              }}>
+                <img src={logo} alt="WAI DZ" style={{ height: 40, width: 'auto', objectFit: 'contain' }} />
               </div>
             </Link>
 
-            <span style={{
-              display: 'inline-block',
-              fontSize: 10,
-              fontWeight: 700,
-              letterSpacing: '0.18em',
-              textTransform: 'uppercase',
-              color: 'var(--color-accent)',
-              marginBottom: 8,
-            }}>
-              {isRTL ? 'مرحباً بعودتك' : 'Bon retour'}
-            </span>
-
-            <h1 style={{
-              fontSize: '1.6rem',
-              fontWeight: isRTL ? 700 : 400,
-              fontStyle: isRTL ? 'normal' : 'italic',
-              color: 'var(--color-primary)',
-              marginBottom: 6,
-              fontFamily: isRTL ? 'var(--font-arabic)' : 'var(--font-serif)',
-            }}>
-              {t('auth.login.title')}
-            </h1>
-            <p style={{
-              fontSize: 13,
-              color: 'var(--color-text-secondary)',
-              lineHeight: 1.5,
-              maxWidth: 300,
-              margin: '0 auto',
-            }}>
-              {t('auth.login.subtitle')}
-            </p>
+            {/* Title block */}
+            <div style={{ flex: 1, minWidth: 0, textAlign: isRTL ? 'right' : 'left' }}>
+              <p style={{
+                fontSize: 10, fontWeight: 700, letterSpacing: '0.16em',
+                textTransform: 'uppercase', color: 'var(--color-accent)',
+                marginBottom: 2,
+              }}>
+                {isRTL ? 'مرحباً بعودتك' : 'Bon retour'}
+              </p>
+              <h1 style={{
+                fontSize: '1.4rem',
+                fontWeight: isRTL ? 700 : 400,
+                fontStyle: isRTL ? 'normal' : 'italic',
+                color: 'var(--color-primary)',
+                fontFamily: isRTL ? 'var(--font-arabic-display)' : 'var(--font-serif)',
+                lineHeight: 1.15,
+                margin: 0,
+              }}>
+                {t('auth.login.title')}
+              </h1>
+              <p style={{
+                fontSize: 12,
+                color: 'var(--color-text-secondary)',
+                lineHeight: 1.4,
+                marginTop: 4,
+              }}>
+                {t('auth.login.subtitle')}
+              </p>
+            </div>
           </div>
 
           {/* Info message */}
