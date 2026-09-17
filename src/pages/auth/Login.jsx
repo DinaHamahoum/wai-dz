@@ -106,7 +106,7 @@ export default function Login() {
       setError(lang === 'fr' ? 'Veuillez saisir votre adresse email ci-dessus pour réinitialiser le mot de passe.' : 'يرجى إدخال عنوان بريدك الإلكتروني أعلاه لإعادة تعيين كلمة المرور.');
       return;
     }
-    
+
     setLoading(true);
     setError(null);
     try {
@@ -198,230 +198,219 @@ export default function Login() {
 
         {/* ── Panneau formulaire ── */}
         <div className="auth-form-panel">
-        <div style={{
-          width: '100%',
-          maxWidth: 380,
-          background: '#ffffff',
-          borderRadius: 'var(--radius-sm)',
-          border: '1px solid var(--color-border)',
-          boxShadow: 'var(--shadow-md)',
-          padding: '32px 28px',
-          direction: isRTL ? 'rtl' : 'ltr',
-        }}>
-          {/* NOUVEAU HEADER : logo inline + titre */}
           <div style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: 16,
-            marginBottom: 26,
+            width: '100%',
+            maxWidth: 380,
+            background: '#ffffff',
+            borderRadius: 'var(--radius-sm)',
+            border: '1px solid var(--color-border)',
+            boxShadow: 'var(--shadow-md)',
+            padding: '32px 28px',
             direction: isRTL ? 'rtl' : 'ltr',
           }}>
-            {/* Logo compact */}
-            <Link to="/" style={{ textDecoration: 'none', flexShrink: 0 }}>
-              <div style={{
-                width: 52, height: 52,
-                borderRadius: 12,
-                border: '1px solid var(--color-border-gold)',
-                background: '#fff',
-                display: 'flex', alignItems: 'center', justifyContent: 'center',
-                boxShadow: '0 2px 8px rgba(14,110,87,0.10)',
-                overflow: 'hidden',
-                padding: 4,
-              }}>
-                <img src={logo} alt="WAI DZ" style={{ height: 40, width: 'auto', objectFit: 'contain' }} />
-              </div>
-            </Link>
-
-            {/* Title block */}
-            <div style={{ flex: 1, minWidth: 0, textAlign: isRTL ? 'right' : 'left' }}>
-              <p style={{
-                fontSize: 10, fontWeight: 700, letterSpacing: '0.16em',
-                textTransform: 'uppercase', color: 'var(--color-accent)',
-                marginBottom: 2,
-              }}>
-                {isRTL ? 'مرحباً بعودتك' : 'Bon retour'}
-              </p>
-              <h1 style={{
-                fontSize: '1.4rem',
-                fontWeight: isRTL ? 700 : 400,
-                fontStyle: isRTL ? 'normal' : 'italic',
-                color: 'var(--color-primary)',
-                fontFamily: isRTL ? 'var(--font-arabic-display)' : 'var(--font-serif)',
-                lineHeight: 1.15,
-                margin: 0,
-              }}>
-                {t('auth.login.title')}
-              </h1>
-              <p style={{
-                fontSize: 12,
-                color: 'var(--color-text-secondary)',
-                lineHeight: 1.4,
-                marginTop: 4,
-              }}>
-                {t('auth.login.subtitle')}
-              </p>
-            </div>
-          </div>
-
-          {/* Info message */}
-          {infoMsg && (
+            {/* NOUVEAU HEADER : logo inline + titre */}
             <div style={{
-              padding: '10px 14px',
-              background: 'var(--color-accent-light)',
-              border: '1px solid var(--color-accent)',
-              borderRadius: 'var(--radius-sm)',
-              fontSize: 12,
-              color: 'var(--color-primary)',
-              marginBottom: 16,
-              textAlign: isRTL ? 'right' : 'left',
+              display: 'flex',
+              alignItems: 'center',
+              gap: 16,
+              marginBottom: 26,
+              direction: isRTL ? 'rtl' : 'ltr',
             }}>
-              {infoMsg}
-            </div>
-          )}
+              {/* Logo seul */}
+              <Link to="/" style={{ textDecoration: 'none', flexShrink: 0, display: 'flex', alignItems: 'center' }}>
+                <img src={logo} alt="WAI DZ" style={{ height: 44, width: 'auto', objectFit: 'contain' }} />
+              </Link>
 
-          {/* Error message */}
-          {error && (
-            <div style={{
-              padding: '10px 14px',
-              background: '#fef2f2',
-              border: '1px solid #fecaca',
-              borderRadius: 'var(--radius-sm)',
-              fontSize: 12,
-              color: '#dc2626',
-              marginBottom: 16,
-              textAlign: isRTL ? 'right' : 'left',
-            }}>
-              {error}
-            </div>
-          )}
-
-          {/* Form */}
-          <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
-            {/* Email */}
-            <div>
-              <label className="input-label" style={{ textAlign: isRTL ? 'right' : 'left' }}>
-                {t('auth.login.email')}
-              </label>
-              <div style={{ position: 'relative' }}>
-                <Mail size={16} style={{
-                  position: 'absolute', top: '50%', transform: 'translateY(-50%)',
-                  ...(isRTL ? { right: 14 } : { left: 14 }),
-                  color: 'var(--color-accent)', pointerEvents: 'none',
-                }} />
-                <input
-                  type="email"
-                  name="email"
-                  value={form.email}
-                  onChange={handleChange}
-                  placeholder={t('auth.login.emailPlaceholder')}
-                  className="input"
-                  style={{
-                    paddingLeft: isRTL ? 16 : 44,
-                    paddingRight: isRTL ? 44 : 16,
-                    textAlign: isRTL ? 'right' : 'left',
-                  }}
-                  autoComplete="email"
-                />
-              </div>
-            </div>
-
-            {/* Password */}
-            <div>
-              <div style={{
-                display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'center',
-                marginBottom: 8,
-                flexDirection: isRTL ? 'row-reverse' : 'row',
-              }}>
-                <label className="input-label" style={{ marginBottom: 0 }}>
-                  {t('auth.login.password')}
-                </label>
-                <a href="#" onClick={handleForgotPassword} style={{
-                  fontSize: 12, color: 'var(--color-accent)',
-                  textDecoration: 'none', fontWeight: 600, cursor: 'pointer'
+              {/* Title block */}
+              <div style={{ flex: 1, minWidth: 0, textAlign: isRTL ? 'right' : 'left' }}>
+                <p style={{
+                  fontSize: 10, fontWeight: 700, letterSpacing: '0.16em',
+                  textTransform: 'uppercase', color: 'var(--color-accent)',
+                  marginBottom: 2,
                 }}>
-                  {t('auth.login.forgot')}
-                </a>
-              </div>
-              <div style={{ position: 'relative' }}>
-                <Lock size={16} style={{
-                  position: 'absolute', top: '50%', transform: 'translateY(-50%)',
-                  ...(isRTL ? { right: 14 } : { left: 14 }),
-                  color: 'var(--color-accent)', pointerEvents: 'none',
-                }} />
-                <input
-                  type={showPwd ? 'text' : 'password'}
-                  name="password"
-                  value={form.password}
-                  onChange={handleChange}
-                  placeholder={t('auth.login.passwordPlaceholder')}
-                  className="input"
-                  style={{
-                    paddingLeft: isRTL ? 44 : 44,
-                    paddingRight: isRTL ? 44 : 44,
-                    textAlign: isRTL ? 'right' : 'left',
-                  }}
-                  autoComplete="current-password"
-                />
-                <button
-                  type="button"
-                  onClick={() => setShowPwd(s => !s)}
-                  style={{
-                    position: 'absolute', top: '50%', transform: 'translateY(-50%)',
-                    ...(isRTL ? { left: 12 } : { right: 12 }),
-                    background: 'none', border: 'none', cursor: 'pointer',
-                    color: 'var(--color-text-muted)', padding: 4,
-                  }}
-                >
-                  {showPwd ? <EyeOff size={16} /> : <Eye size={16} />}
-                </button>
+                  {isRTL ? 'مرحباً بعودتك' : 'Bon retour'}
+                </p>
+                <h1 style={{
+                  fontSize: '1.4rem',
+                  fontWeight: isRTL ? 700 : 400,
+                  fontStyle: isRTL ? 'normal' : 'italic',
+                  color: 'var(--color-primary)',
+                  fontFamily: isRTL ? 'var(--font-arabic-display)' : 'var(--font-serif)',
+                  lineHeight: 1.15,
+                  margin: 0,
+                }}>
+                  {t('auth.login.title')}
+                </h1>
+                <p style={{
+                  fontSize: 12,
+                  color: 'var(--color-text-secondary)',
+                  lineHeight: 1.4,
+                  marginTop: 4,
+                }}>
+                  {t('auth.login.subtitle')}
+                </p>
               </div>
             </div>
 
-            {/* Submit */}
-            <button
-              type="submit"
-              className="btn btn-forest"
-              disabled={loading}
-              style={{
-                width: '100%',
-                marginTop: 4,
-                opacity: loading ? 0.85 : 1,
-                cursor: loading ? 'not-allowed' : 'pointer',
-              }}
-            >
-              {loading ? (
-                <span>{t('auth.login.loading')}</span>
-              ) : (
-                <>
-                  <span>{t('auth.login.submit')}</span>
-                  <ArrowRight size={16} style={isRTL ? { transform: 'scaleX(-1)' } : {}} />
-                </>
-              )}
-            </button>
-          </form>
+            {/* Info message */}
+            {infoMsg && (
+              <div style={{
+                padding: '10px 14px',
+                background: 'var(--color-accent-light)',
+                border: '1px solid var(--color-accent)',
+                borderRadius: 'var(--radius-sm)',
+                fontSize: 12,
+                color: 'var(--color-primary)',
+                marginBottom: 16,
+                textAlign: isRTL ? 'right' : 'left',
+              }}>
+                {infoMsg}
+              </div>
+            )}
 
-          {/* Footer Link */}
-          <div style={{
-            marginTop: 22,
-            paddingTop: 16,
-            borderTop: '1px solid var(--color-border)',
-            textAlign: 'center',
-            fontSize: 12,
-            color: 'var(--color-text-secondary)',
-          }}>
-            {t('auth.login.noAccount')}{' '}
-            <Link to="/register" style={{
-              color: 'var(--color-primary)',
-              fontWeight: 700,
-              textDecoration: 'none',
+            {/* Error message */}
+            {error && (
+              <div style={{
+                padding: '10px 14px',
+                background: '#fef2f2',
+                border: '1px solid #fecaca',
+                borderRadius: 'var(--radius-sm)',
+                fontSize: 12,
+                color: '#dc2626',
+                marginBottom: 16,
+                textAlign: isRTL ? 'right' : 'left',
+              }}>
+                {error}
+              </div>
+            )}
+
+            {/* Form */}
+            <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
+              {/* Email */}
+              <div>
+                <label className="input-label" style={{ textAlign: isRTL ? 'right' : 'left' }}>
+                  {t('auth.login.email')}
+                </label>
+                <div style={{ position: 'relative' }}>
+                  <Mail size={16} style={{
+                    position: 'absolute', top: '50%', transform: 'translateY(-50%)',
+                    ...(isRTL ? { right: 14 } : { left: 14 }),
+                    color: 'var(--color-accent)', pointerEvents: 'none',
+                  }} />
+                  <input
+                    type="email"
+                    name="email"
+                    value={form.email}
+                    onChange={handleChange}
+                    placeholder={t('auth.login.emailPlaceholder')}
+                    className="input"
+                    style={{
+                      paddingLeft: isRTL ? 16 : 44,
+                      paddingRight: isRTL ? 44 : 16,
+                      textAlign: isRTL ? 'right' : 'left',
+                    }}
+                    autoComplete="email"
+                  />
+                </div>
+              </div>
+
+              {/* Password */}
+              <div>
+                <div style={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                  marginBottom: 8,
+                  flexDirection: isRTL ? 'row-reverse' : 'row',
+                }}>
+                  <label className="input-label" style={{ marginBottom: 0 }}>
+                    {t('auth.login.password')}
+                  </label>
+                  <a href="#" onClick={handleForgotPassword} style={{
+                    fontSize: 12, color: 'var(--color-accent)',
+                    textDecoration: 'none', fontWeight: 600, cursor: 'pointer'
+                  }}>
+                    {t('auth.login.forgot')}
+                  </a>
+                </div>
+                <div style={{ position: 'relative' }}>
+                  <Lock size={16} style={{
+                    position: 'absolute', top: '50%', transform: 'translateY(-50%)',
+                    ...(isRTL ? { right: 14 } : { left: 14 }),
+                    color: 'var(--color-accent)', pointerEvents: 'none',
+                  }} />
+                  <input
+                    type={showPwd ? 'text' : 'password'}
+                    name="password"
+                    value={form.password}
+                    onChange={handleChange}
+                    placeholder={t('auth.login.passwordPlaceholder')}
+                    className="input"
+                    style={{
+                      paddingLeft: isRTL ? 44 : 44,
+                      paddingRight: isRTL ? 44 : 44,
+                      textAlign: isRTL ? 'right' : 'left',
+                    }}
+                    autoComplete="current-password"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPwd(s => !s)}
+                    style={{
+                      position: 'absolute', top: '50%', transform: 'translateY(-50%)',
+                      ...(isRTL ? { left: 12 } : { right: 12 }),
+                      background: 'none', border: 'none', cursor: 'pointer',
+                      color: 'var(--color-text-muted)', padding: 4,
+                    }}
+                  >
+                    {showPwd ? <EyeOff size={16} /> : <Eye size={16} />}
+                  </button>
+                </div>
+              </div>
+
+              {/* Submit */}
+              <button
+                type="submit"
+                className="btn btn-forest"
+                disabled={loading}
+                style={{
+                  width: '100%',
+                  marginTop: 4,
+                  opacity: loading ? 0.85 : 1,
+                  cursor: loading ? 'not-allowed' : 'pointer',
+                }}
+              >
+                {loading ? (
+                  <span>{t('auth.login.loading')}</span>
+                ) : (
+                  <>
+                    <span>{t('auth.login.submit')}</span>
+                    <ArrowRight size={16} style={isRTL ? { transform: 'scaleX(-1)' } : {}} />
+                  </>
+                )}
+              </button>
+            </form>
+
+            {/* Footer Link */}
+            <div style={{
+              marginTop: 22,
+              paddingTop: 16,
+              borderTop: '1px solid var(--color-border)',
+              textAlign: 'center',
+              fontSize: 12,
+              color: 'var(--color-text-secondary)',
             }}>
-              {t('auth.login.register')}
-            </Link>
+              {t('auth.login.noAccount')}{' '}
+              <Link to="/register" style={{
+                color: 'var(--color-primary)',
+                fontWeight: 700,
+                textDecoration: 'none',
+              }}>
+                {t('auth.login.register')}
+              </Link>
+            </div>
           </div>
         </div>
-      </div>
       </div>
     </div>
   );

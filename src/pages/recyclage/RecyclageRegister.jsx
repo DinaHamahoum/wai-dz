@@ -381,20 +381,9 @@ export default function RecyclageRegister() {
               marginBottom: 20,
               direction: isRTL ? 'rtl' : 'ltr',
             }}>
-              {/* Logo compact */}
-              <Link to="/" style={{ textDecoration: 'none', flexShrink: 0 }}>
-                <div style={{
-                  width: 52, height: 52,
-                  borderRadius: 12,
-                  border: '1px solid var(--color-border-gold)',
-                  background: '#fff',
-                  display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  boxShadow: '0 2px 8px rgba(14,110,87,0.10)',
-                  overflow: 'hidden',
-                  padding: 4,
-                }}>
-                  <img src={logo} alt="WAI DZ" style={{ height: 40, width: 'auto', objectFit: 'contain' }} />
-                </div>
+              {/* Logo seul */}
+              <Link to="/" style={{ textDecoration: 'none', flexShrink: 0, display: 'flex', alignItems: 'center' }}>
+                <img src={logo} alt="WAI DZ" style={{ height: 44, width: 'auto', objectFit: 'contain' }} />
               </Link>
 
               {/* Title block */}
@@ -684,71 +673,71 @@ export default function RecyclageRegister() {
 
                 {/* ── Section : Abonnement ── */}
                 <div>
-                    <p style={{
-                      fontFamily: isRTL ? 'var(--font-arabic-display)' : 'var(--font-serif)',
-                      fontSize: '0.95rem', fontWeight: 400, fontStyle: isRTL ? 'normal' : 'italic',
-                      color: 'var(--color-primary)', marginBottom: 14,
-                      paddingBottom: 8, borderBottom: '1px solid var(--color-border)',
-                    }}>
-                      {lang === 'fr' ? 'Choisissez votre abonnement' : 'اختر اشتراكك'}
-                    </p>
-                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 10 }}>
-                      {PLANS.map(({ key, label, duration, price, icon: Icon, features, color, bg, border, recommended }) => {
-                        const isSelected = selectedPlan === key;
-                        return (
-                          <div
-                            key={key}
-                            className="plan-card"
-                            onClick={() => setSelectedPlan(key)}
-                            style={{
-                              border: `2px solid ${isSelected ? color : border}`,
-                              borderRadius: 10, padding: '14px 12px',
-                              background: isSelected ? bg : '#fafafa',
-                              position: 'relative',
-                              boxShadow: isSelected ? `0 4px 16px ${color}22` : 'none',
-                            }}
-                          >
-                            {recommended && (
-                              <span style={{
-                                position: 'absolute', top: -10, left: '50%', transform: 'translateX(-50%)',
-                                background: color, color: '#fff', fontSize: 9, fontWeight: 700,
-                                padding: '3px 10px', borderRadius: 99,
-                                letterSpacing: '0.06em', textTransform: 'uppercase', whiteSpace: 'nowrap',
-                              }}>
-                                {lang === 'fr' ? 'Recommandé' : 'موصى به'}
-                              </span>
-                            )}
-                            <div style={{
-                              width: 30, height: 30, borderRadius: 8, background: `${color}22`,
-                              display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 8,
+                  <p style={{
+                    fontFamily: isRTL ? 'var(--font-arabic-display)' : 'var(--font-serif)',
+                    fontSize: '0.95rem', fontWeight: 400, fontStyle: isRTL ? 'normal' : 'italic',
+                    color: 'var(--color-primary)', marginBottom: 14,
+                    paddingBottom: 8, borderBottom: '1px solid var(--color-border)',
+                  }}>
+                    {lang === 'fr' ? 'Choisissez votre abonnement' : 'اختر اشتراكك'}
+                  </p>
+                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 10 }}>
+                    {PLANS.map(({ key, label, duration, price, icon: Icon, features, color, bg, border, recommended }) => {
+                      const isSelected = selectedPlan === key;
+                      return (
+                        <div
+                          key={key}
+                          className="plan-card"
+                          onClick={() => setSelectedPlan(key)}
+                          style={{
+                            border: `2px solid ${isSelected ? color : border}`,
+                            borderRadius: 10, padding: '14px 12px',
+                            background: isSelected ? bg : '#fafafa',
+                            position: 'relative',
+                            boxShadow: isSelected ? `0 4px 16px ${color}22` : 'none',
+                          }}
+                        >
+                          {recommended && (
+                            <span style={{
+                              position: 'absolute', top: -10, left: '50%', transform: 'translateX(-50%)',
+                              background: color, color: '#fff', fontSize: 9, fontWeight: 700,
+                              padding: '3px 10px', borderRadius: 99,
+                              letterSpacing: '0.06em', textTransform: 'uppercase', whiteSpace: 'nowrap',
                             }}>
-                              <Icon size={16} color={color} strokeWidth={1.5} />
-                            </div>
-                            <p style={{ fontSize: 12, fontWeight: 700, color: 'var(--color-text)', marginBottom: 1 }}>{label}</p>
-                            <p style={{ fontSize: 13, fontWeight: 700, color, marginBottom: 2 }}>{price}</p>
-                            <p style={{ fontSize: 10, color: 'var(--color-text-muted)', marginBottom: 8 }}>{duration}</p>
-                            <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: 3 }}>
-                              {features.map(f => (
-                                <li key={f} style={{ fontSize: 10, color: 'var(--color-text-secondary)', display: 'flex', alignItems: 'flex-start', gap: 5 }}>
-                                  <CheckCircle2 size={10} color={color} style={{ flexShrink: 0, marginTop: 1 }} />
-                                  {f}
-                                </li>
-                              ))}
-                            </ul>
-                            {isSelected && (
-                              <div style={{
-                                position: 'absolute', top: 10, right: 10, width: 16, height: 16,
-                                borderRadius: '50%', background: color,
-                                display: 'flex', alignItems: 'center', justifyContent: 'center',
-                              }}>
-                                <CheckCircle2 size={10} color="#fff" />
-                              </div>
-                            )}
+                              {lang === 'fr' ? 'Recommandé' : 'موصى به'}
+                            </span>
+                          )}
+                          <div style={{
+                            width: 30, height: 30, borderRadius: 8, background: `${color}22`,
+                            display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 8,
+                          }}>
+                            <Icon size={16} color={color} strokeWidth={1.5} />
                           </div>
-                        );
-                      })}
-                    </div>
+                          <p style={{ fontSize: 12, fontWeight: 700, color: 'var(--color-text)', marginBottom: 1 }}><span dir={lang === 'ar' ? 'ltr' : 'ltr'} style={{ display: 'inline-block' }}>{label}</span></p>
+                          <p style={{ fontSize: 13, fontWeight: 700, color, marginBottom: 2 }}><span dir="ltr" style={{ display: 'inline-block' }}>{price}</span></p>
+                          <p style={{ fontSize: 10, color: 'var(--color-text-muted)', marginBottom: 8 }}><span dir="ltr" style={{ display: 'inline-block' }}>{duration}</span></p>
+                          <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: 3 }}>
+                            {features.map(f => (
+                              <li key={f} style={{ fontSize: 10, color: 'var(--color-text-secondary)', display: 'flex', alignItems: 'flex-start', gap: 5 }}>
+                                <CheckCircle2 size={10} color={color} style={{ flexShrink: 0, marginTop: 1 }} />
+                                <span dir="ltr">{f}</span>
+                              </li>
+                            ))}
+                          </ul>
+                          {isSelected && (
+                            <div style={{
+                              position: 'absolute', top: 10, right: 10, width: 16, height: 16,
+                              borderRadius: '50%', background: color,
+                              display: 'flex', alignItems: 'center', justifyContent: 'center',
+                            }}>
+                              <CheckCircle2 size={10} color="#fff" />
+                            </div>
+                          )}
+                        </div>
+                      );
+                    })}
                   </div>
+                </div>
 
                 {/* ── Submit ── */}
                 <button
