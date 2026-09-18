@@ -1,7 +1,7 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { LanguageProvider } from './i18n/LanguageContext';
 import { AuthProvider } from './contexts/AuthContext';
-import AppGateway from './components/AppGateway';
+
 import ProtectedRoute from './components/ProtectedRoute';
 import Home from './pages/Home';
 import Login from './pages/auth/Login';
@@ -21,7 +21,7 @@ function App() {
   return (
     <LanguageProvider>
       <AuthProvider>
-        <AppGateway>
+
           <BrowserRouter>
             <Routes>
               <Route path="/" element={<Home />} />
@@ -59,7 +59,7 @@ function App() {
               <Route path="/commune/dashboard" element={<ProtectedRoute allowedRoles={['commune']}><CommuneDashboard /></ProtectedRoute>} />
             </Routes>
           </BrowserRouter>
-        </AppGateway>
+
       </AuthProvider>
     </LanguageProvider>
   );
