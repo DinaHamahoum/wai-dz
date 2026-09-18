@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { LanguageProvider } from './i18n/LanguageContext';
 import { AuthProvider } from './contexts/AuthContext';
+import AppGateway from './components/AppGateway';
 import ProtectedRoute from './components/ProtectedRoute';
 import Home from './pages/Home';
 import Login from './pages/auth/Login';
@@ -15,47 +16,50 @@ import CommuneDashboard from './pages/commune/CommuneDashboard';
 import PrivacyPolicy from './pages/PrivacyPolicy';
 import TermsOfUse from './pages/TermsOfUse';
 
+
 function App() {
   return (
     <LanguageProvider>
       <AuthProvider>
-        <BrowserRouter>
-          <Routes>
-            <Route path="/"                        element={<Home />} />
-            <Route path="/login"                   element={<Login />} />
-            <Route path="/register"                element={<Register />} />
-            <Route path="/update-password"         element={<UpdatePassword />} />
-            <Route path="/confidentialite"         element={<PrivacyPolicy />} />
-            <Route path="/conditions-utilisation"  element={<TermsOfUse />} />
+        <AppGateway>
+          <BrowserRouter>
+            <Routes>
+              <Route path="/" element={<Home />} />
+              <Route path="/login" element={<Login />} />
+              <Route path="/register" element={<Register />} />
+              <Route path="/update-password" element={<UpdatePassword />} />
+              <Route path="/confidentialite" element={<PrivacyPolicy />} />
+              <Route path="/conditions-utilisation" element={<TermsOfUse />} />
 
-            {/* Inscription société de recyclage (publique) */}
-            <Route path="/recyclage/inscription"   element={<RecyclageRegister />} />
+              {/* Inscription société de recyclage (publique) */}
+              <Route path="/recyclage/inscription" element={<RecyclageRegister />} />
 
-            {/* Routes protégées */}
-            <Route path="/citoyen" element={
-              <ProtectedRoute allowedRoles={['citoyen', 'etablissement']}>
-                <CitoyenDashboard />
-              </ProtectedRoute>
-            } />
+              {/* Routes protégées */}
+              <Route path="/citoyen" element={
+                <ProtectedRoute allowedRoles={['citoyen', 'etablissement']}>
+                  <CitoyenDashboard />
+                </ProtectedRoute>
+              } />
 
-            <Route path="/recyclage" element={
-              <ProtectedRoute allowedRoles={['societe_recyclage']}>
-                <RecyclageDashboard />
-              </ProtectedRoute>
-            } />
+              <Route path="/recyclage" element={
+                <ProtectedRoute allowedRoles={['societe_recyclage']}>
+                  <RecyclageDashboard />
+                </ProtectedRoute>
+              } />
 
-            <Route path="/cet" element={
-              <ProtectedRoute allowedRoles={['cet']}>
-                <CETDashboard />
-              </ProtectedRoute>
-            } />
+              <Route path="/cet" element={
+                <ProtectedRoute allowedRoles={['cet']}>
+                  <CETDashboard />
+                </ProtectedRoute>
+              } />
 
-            {/* Future routes */}
-            {/* <Route path="/mobilier" element={<ProtectedRoute allowedRoles={['mobilier_urbain']}><MobilierDashboard /></ProtectedRoute>} /> */}
-            <Route path="/admin/dashboard" element={<ProtectedRoute allowedRoles={['admin']}><AdminDashboard /></ProtectedRoute>} />
-            <Route path="/commune/dashboard" element={<ProtectedRoute allowedRoles={['commune']}><CommuneDashboard /></ProtectedRoute>} />
-          </Routes>
-        </BrowserRouter>
+              {/* Future routes */}
+              {/* <Route path="/mobilier" element={<ProtectedRoute allowedRoles={['mobilier_urbain']}><MobilierDashboard /></ProtectedRoute>} /> */}
+              <Route path="/admin/dashboard" element={<ProtectedRoute allowedRoles={['admin']}><AdminDashboard /></ProtectedRoute>} />
+              <Route path="/commune/dashboard" element={<ProtectedRoute allowedRoles={['commune']}><CommuneDashboard /></ProtectedRoute>} />
+            </Routes>
+          </BrowserRouter>
+        </AppGateway>
       </AuthProvider>
     </LanguageProvider>
   );
