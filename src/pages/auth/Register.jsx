@@ -190,9 +190,9 @@ export default function Register() {
   const reg = t('auth.register');
 
   return (
-    <div style={{ position: 'fixed', inset: 0, width: '100vw', height: '100vh', background: 'var(--color-primary-dark)', overflow: 'hidden' }}>
+    <div style={{ position: 'fixed', inset: 0, width: '100vw', height: '100vh', background: 'var(--color-primary-dark)' }}>
       <style>{`
-        .auth-split { display: grid; grid-template-columns: 1fr; height: 100vh; width: 100vw; overflow: hidden; }
+        .auth-split { display: grid; grid-template-columns: 1fr; height: 100vh; width: 100vw; overflow-y: auto; }
         .auth-visual { display: none; }
         .auth-form-panel {
           background: var(--color-bg);
@@ -200,8 +200,7 @@ export default function Register() {
           align-items: flex-start;
           justify-content: center;
           padding: 28px 16px 40px;
-          height: 100vh;
-          overflow-y: auto;
+          min-height: 100vh;
           box-sizing: border-box;
         }
         @media (min-width: 960px) {

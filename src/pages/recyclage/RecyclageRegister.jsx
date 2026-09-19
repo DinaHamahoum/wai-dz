@@ -289,9 +289,9 @@ export default function RecyclageRegister() {
   const vt = currentOrganisme.visualText;
 
   return (
-    <div style={{ position: 'fixed', inset: 0, width: '100vw', height: '100vh', background: 'var(--color-primary-dark)', overflow: 'hidden' }}>
+    <div style={{ position: 'fixed', inset: 0, width: '100vw', height: '100vh', background: 'var(--color-primary-dark)' }}>
       <style>{`
-        .recyclage-split { display: grid; grid-template-columns: 1fr; height: 100vh; width: 100vw; overflow: hidden; }
+        .recyclage-split { display: grid; grid-template-columns: 1fr; height: 100vh; width: 100vw; overflow-y: auto; }
         .recyclage-visual { display: none; }
         .recyclage-form-panel {
           background: var(--color-bg);
@@ -299,8 +299,7 @@ export default function RecyclageRegister() {
           align-items: flex-start;
           justify-content: center;
           padding: 32px 20px 48px;
-          height: 100vh;
-          overflow-y: auto;
+          min-height: 100vh;
           box-sizing: border-box;
         }
         @media (min-width: 1024px) {
