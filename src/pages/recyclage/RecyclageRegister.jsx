@@ -291,7 +291,7 @@ export default function RecyclageRegister() {
   return (
     <div style={{ position: 'fixed', inset: 0, width: '100vw', height: '100vh', background: 'var(--color-primary-dark)' }}>
       <style>{`
-        .recyclage-split { display: grid; grid-template-columns: 1fr; height: 100vh; width: 100vw; overflow-y: auto; }
+        .recyclage-split { display: grid; grid-template-columns: 1fr; min-height: 100vh; width: 100vw; overflow-y: auto; }
         .recyclage-visual { display: none; }
         .recyclage-form-panel {
           background: var(--color-bg);
