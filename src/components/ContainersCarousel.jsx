@@ -15,7 +15,8 @@ export default function ContainersCarousel() {
   // Vitesse de défilement automatique : 2.5 secondes par image
   const SLIDE_DURATION = 2500;
   const touchStartXRef = useRef(0);
-  const touchEndXRef = useRef(0);
+  const touchStartYRef = useRef(0);
+  const isSwipingRef = useRef(false);
 
   // ── CHARGEMENT DE TOUTES LES IMAGES DES CONTENEURS ──
   const fetchContainers = useCallback(async () => {
@@ -115,15 +116,27 @@ export default function ContainersCarousel() {
     return () => clearInterval(timer);
   }, [items.length, lightboxImage, SLIDE_DURATION]);
 
-  // Touch swipe mobile
+  // Touch swipe mobile optimisé (ne bloque pas le défilement vertical)
   const handleTouchStart = (e) => {
     touchStartXRef.current = e.touches[0].clientX;
+    touchStartYRef.current = e.touches[0].clientY;
+    isSwipingRef.current = true;
   };
+
   const handleTouchMove = (e) => {
-    touchEndXRef.current = e.touches[0].clientX;
+    if (!isSwipingRef.current) return;
+    const deltaX = Math.abs(e.touches[0].clientX - touchStartXRef.current);
+    const deltaY = Math.abs(e.touches[0].clientY - touchStartYRef.current);
+    if (deltaY > deltaX) {
+      isSwipingRef.current = false;
+    }
   };
-  const handleTouchEnd = () => {
-    const deltaX = touchStartXRef.current - touchEndXRef.current;
+
+  const handleTouchEnd = (e) => {
+    if (!isSwipingRef.current) return;
+    isSwipingRef.current = false;
+    const endX = e.changedTouches?.[0]?.clientX ?? touchStartXRef.current;
+    const deltaX = touchStartXRef.current - endX;
     if (Math.abs(deltaX) > 40) {
       if (deltaX > 0) {
         setCurrentIndex(prev => (prev === items.length - 1 ? 0 : prev + 1));
@@ -145,11 +158,11 @@ export default function ContainersCarousel() {
         borderBottom: '1px solid var(--color-border)',
         padding: '60px 0 70px',
       }}
-      aria-label={isRTL ? 'حاوياتنا ومنتجاتنا' : 'Nos conteneurs et produits'}
+      aria-label={isRTL ? 'حاوياتنا' : 'Nos conteneurs'}
     >
       <div className="container" style={{ maxWidth: 1060 }}>
         {/* ── EN-TÊTE DE LA SECTION (IDENTIQUE AUX AUTRES SECTIONS) ── */}
-        <div style={{ textAlign: 'center', maxWidth: 640, margin: '0 auto 56px' }}>
+        <div style={{ textAlign: 'center', maxWidth: 640, margin: '0 auto 46px' }}>
           <span className="section-haute-eyebrow">
             {t('home.containersSection.eyebrow') || (isRTL ? 'حاوياتنا' : 'Nos Conteneurs')}
           </span>
@@ -162,40 +175,43 @@ export default function ContainersCarousel() {
           </h2>
         </div>
 
-        {/* ── ZONE DE DÉFILEMENT PAR GLISSEMENT LATÉRAL FLUIDE (SLIDE) ── */}
+        {/* ── ZONE DE PRÉSENTATION EN FONDU ENCHAÎNÉ DOUX ET MODERNE ── */}
         <div
           dir="ltr"
           style={{
             position: 'relative',
             width: '100%',
             maxWidth: 820,
+            height: 'clamp(280px, 60vw, 460px)',
             margin: '0 auto',
             overflow: 'hidden',
+            borderRadius: 20,
+            background: '#ffffff',
           }}
           onTouchStart={handleTouchStart}
           onTouchMove={handleTouchMove}
           onTouchEnd={handleTouchEnd}
         >
-          <div
-            style={{
-              display: 'flex',
-              transform: `translateX(-${currentIndex * 100}%)`,
-              transition: 'transform 0.75s cubic-bezier(0.22, 1, 0.36, 1)',
-              willChange: 'transform',
-            }}
-          >
-            {items.map((item, idx) => (
+          {items.map((item, idx) => {
+            const isActive = idx === currentIndex;
+
+            return (
               <div
                 key={item.image_url || idx}
                 style={{
-                  minWidth: '100%',
-                  flexShrink: 0,
-                  height: 'clamp(280px, 46vw, 460px)',
+                  position: 'absolute',
+                  inset: 0,
+                  width: '100%',
+                  height: '100%',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
                   cursor: 'pointer',
-                  padding: '10px 0',
+                  opacity: isActive ? 1 : 0,
+                  transform: isActive ? 'scale(1)' : 'scale(1.03)',
+                  transition: 'opacity 0.85s cubic-bezier(0.4, 0, 0.2, 1), transform 1.1s cubic-bezier(0.4, 0, 0.2, 1)',
+                  pointerEvents: isActive ? 'auto' : 'none',
+                  zIndex: isActive ? 2 : 1,
                   borderRadius: 20,
                   overflow: 'hidden',
                 }}
@@ -205,18 +221,18 @@ export default function ContainersCarousel() {
                   src={item.image_url}
                   alt={item.titre || (isRTL ? 'حاوية' : 'Conteneur')}
                   style={{
-                    maxWidth: '100%',
-                    maxHeight: '100%',
+                    width: '100%',
+                    height: '100%',
                     objectFit: 'contain',
                     borderRadius: 20,
                     userSelect: 'none',
-                    filter: 'drop-shadow(0 6px 16px rgba(0,0,0,0.06))',
+                    display: 'block',
                   }}
                   loading="lazy"
                 />
               </div>
-            ))}
-          </div>
+            );
+          })}
         </div>
 
         {/* ── POINTS DE NAVIGATION DISCRETS ── */}
