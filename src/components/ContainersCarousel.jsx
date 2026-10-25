@@ -175,7 +175,7 @@ export default function ContainersCarousel() {
           </h2>
         </div>
 
-        {/* ── ZONE DE PRÉSENTATION EN FONDU ENCHAÎNÉ DOUX ET MODERNE ── */}
+        {/* ── ZONE DE PRÉSENTATION EN FONDU ENCHAÎNÉ DOUX ET MODERNE (COINS DROITS) ── */}
         <div
           dir="ltr"
           style={{
@@ -185,9 +185,7 @@ export default function ContainersCarousel() {
             height: 'clamp(280px, 60vw, 460px)',
             margin: '0 auto',
             overflow: 'hidden',
-            borderRadius: 16,
             background: '#ffffff',
-            boxShadow: '0 10px 30px rgba(18, 38, 30, 0.05)',
           }}
           onTouchStart={handleTouchStart}
           onTouchMove={handleTouchMove}
@@ -209,11 +207,10 @@ export default function ContainersCarousel() {
                   justifyContent: 'center',
                   cursor: 'pointer',
                   opacity: isActive ? 1 : 0,
-                  transform: isActive ? 'scale(1)' : 'scale(1.03)',
+                  transform: isActive ? 'scale(1)' : 'scale(1.02)',
                   transition: 'opacity 0.85s cubic-bezier(0.4, 0, 0.2, 1), transform 1.1s cubic-bezier(0.4, 0, 0.2, 1)',
                   pointerEvents: isActive ? 'auto' : 'none',
                   zIndex: isActive ? 2 : 1,
-                  borderRadius: 16,
                   overflow: 'hidden',
                 }}
                 onClick={() => setLightboxImage(item)}
@@ -225,7 +222,6 @@ export default function ContainersCarousel() {
                     width: '100%',
                     height: '100%',
                     objectFit: 'contain',
-                    borderRadius: 16,
                     userSelect: 'none',
                     display: 'block',
                   }}
@@ -324,7 +320,6 @@ export default function ContainersCarousel() {
                 maxWidth: '85vw',
                 maxHeight: '82vh',
                 objectFit: 'contain',
-                borderRadius: 16,
                 background: '#ffffff',
                 padding: 10,
               }}
