@@ -3,7 +3,7 @@ import {
   LayoutDashboard, Map, AlertTriangle, Package, ShoppingCart,
   LogOut, Menu, X, Landmark, RefreshCw, Clock, CheckCircle2,
   FileText, Check, Loader2, Plus, Sparkles, Sliders, ShoppingBag,
-  Compass, Minus, ArrowRight, User
+  Compass, Minus, ArrowRight, User, Maximize2, CameraOff
 } from 'lucide-react';
 import { useLanguage } from '../../i18n/LanguageContext';
 import { useAuth } from '../../contexts/AuthContext';
@@ -46,6 +46,7 @@ export default function CommuneDashboard() {
   const [customModalOpen, setCustomModalOpen] = useState(false);
   const [orderModal, setOrderModal] = useState(null); // { item, mode, quantite }
   const [orderSubmitting, setOrderSubmitting] = useState(false);
+  const [selectedPhoto, setSelectedPhoto] = useState(null);
 
   // Formulaire de demande de conteneur sur-mesure
   const [form, setForm] = useState({
@@ -380,30 +381,140 @@ export default function CommuneDashboard() {
           {/* ══ TAB: SIGNALEMENTS ══ */}
           {activeTab === 'signalements' && (
             <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
-              <h1 style={{ fontSize: '1.4rem', fontWeight: 800, color: 'var(--color-primary)', margin: 0 }}>
-                {isRTL ? 'بلاغات المواطنين' : 'Signalements Citoyens'}
-              </h1>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <h1 style={{ fontSize: '1.4rem', fontWeight: 800, color: 'var(--color-primary)', margin: 0 }}>
+                  {isRTL ? 'بلاغات المواطنين' : 'Signalements Citoyens'}
+                </h1>
+                <span style={{ fontSize: 13, color: 'var(--color-text-secondary)' }}>
+                  {signalements.length} {isRTL ? 'بلاغ مسجل' : 'signalement(s)'}
+                </span>
+              </div>
+
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
                 {signalements.length === 0 ? (
-                  <p style={{ textAlign: 'center', color: 'var(--color-text-muted)', padding: '40px 0', fontSize: 13 }}>
-                    {isRTL ? 'لا توجد بلاغات' : 'Aucun signalement'}
-                  </p>
+                  <div style={{ background: '#fff', border: '1px solid var(--color-border)', borderRadius: 'var(--radius-sm)', padding: '50px 20px', textAlign: 'center' }}>
+                    <AlertTriangle size={36} color="var(--color-text-muted)" style={{ margin: '0 auto 10px', opacity: 0.3 }} />
+                    <p style={{ color: 'var(--color-text-muted)', fontSize: 14, margin: 0 }}>
+                      {isRTL ? 'لا توجد بلاغات مسجلة حالياً.' : 'Aucun signalement citoyen enregistré.'}
+                    </p>
+                  </div>
                 ) : signalements.map(sig => {
                   const isPending = !sig.statut || sig.statut === 'en_attente' || sig.statut === 'nouveau';
                   return (
-                    <div key={sig.id} style={{ background: '#fff', border: '1px solid var(--color-border)', borderRadius: 'var(--radius-sm)', padding: '14px 18px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 12, flexWrap: 'wrap' }}>
-                      <div>
-                        <p style={{ fontSize: 14, fontWeight: 600, color: 'var(--color-text)', margin: '0 0 3px 0' }}>{sig.description || 'Signalement citoyen'}</p>
-                        <p style={{ fontSize: 12, color: 'var(--color-text-muted)', margin: 0 }}>{formatTimeAgo(sig.created_at, lang)}</p>
+                    <div
+                      key={sig.id}
+                      style={{
+                        background: '#fff',
+                        border: '1px solid var(--color-border)',
+                        borderRadius: 'var(--radius)',
+                        padding: 16,
+                        display: 'flex',
+                        gap: 18,
+                        alignItems: 'center',
+                        flexDirection: isMobile ? 'column' : 'row',
+                        boxShadow: '0 2px 8px rgba(0,0,0,0.03)',
+                        transition: 'box-shadow 0.2s',
+                      }}
+                    >
+                      {/* Photo du signalement avec agrandissement au clic */}
+                      <div
+                        style={{
+                          width: isMobile ? '100%' : 120,
+                          height: isMobile ? 180 : 100,
+                          borderRadius: 'var(--radius-sm)',
+                          overflow: 'hidden',
+                          background: '#f1f5f9',
+                          flexShrink: 0,
+                          position: 'relative',
+                          cursor: sig.photo_url ? 'pointer' : 'default',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          border: '1px solid var(--color-border)',
+                        }}
+                        onClick={() => sig.photo_url && setSelectedPhoto(sig)}
+                        title={sig.photo_url ? (isRTL ? 'اضغط لتكبير الصورة' : 'Cliquer pour agrandir la photo') : ''}
+                      >
+                        {sig.photo_url ? (
+                          <>
+                            <img
+                              src={sig.photo_url}
+                              alt="Photo du signalement"
+                              style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                            />
+                            <div
+                              style={{
+                                position: 'absolute',
+                                inset: 0,
+                                background: 'rgba(0,0,0,0.3)',
+                                opacity: 0,
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                color: '#fff',
+                                transition: 'opacity 0.2s',
+                              }}
+                              onMouseEnter={e => { e.currentTarget.style.opacity = '1'; }}
+                              onMouseLeave={e => { e.currentTarget.style.opacity = '0'; }}
+                            >
+                              <Maximize2 size={20} />
+                            </div>
+                          </>
+                        ) : (
+                          <div style={{ textAlign: 'center', color: 'var(--color-text-muted)' }}>
+                            <CameraOff size={24} style={{ margin: '0 auto 4px', opacity: 0.5 }} />
+                            <span style={{ fontSize: 11 }}>{isRTL ? 'بدون صورة' : 'Sans photo'}</span>
+                          </div>
+                        )}
                       </div>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                        <span style={{ fontSize: 11, fontWeight: 700, padding: '3px 8px', borderRadius: 4, background: isPending ? '#fee2e2' : '#dcfce7', color: isPending ? '#dc2626' : '#16a34a' }}>
-                          {isPending ? (isRTL ? 'قيد المعالجة' : 'En attente') : (isRTL ? 'تم الحل' : 'Résolu')}
-                        </span>
+
+                      {/* Détails du signalement */}
+                      <div style={{ flex: 1, minWidth: 0, display: 'flex', flexDirection: 'column', gap: 6 }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
+                          <span
+                            style={{
+                              fontSize: 11,
+                              fontWeight: 700,
+                              padding: '2px 8px',
+                              borderRadius: 4,
+                              background: isPending ? '#fee2e2' : '#dcfce7',
+                              color: isPending ? '#dc2626' : '#16a34a',
+                            }}
+                          >
+                            {isPending ? (isRTL ? 'قيد المعالجة' : 'En attente') : (isRTL ? 'تم الحل' : 'Résolu')}
+                          </span>
+                          <span style={{ fontSize: 12, color: 'var(--color-text-muted)', display: 'flex', alignItems: 'center', gap: 4 }}>
+                            <Clock size={12} />
+                            {formatTimeAgo(sig.created_at, lang)}
+                          </span>
+                        </div>
+
+                        <p style={{ fontSize: 14, fontWeight: 600, color: 'var(--color-primary)', margin: 0, lineHeight: 1.5, whiteSpace: 'pre-line' }}>
+                          {sig.description || (isRTL ? 'بلاغ من مواطن' : 'Signalement citoyen')}
+                        </p>
+                      </div>
+
+                      {/* Boutons d'action */}
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 10, alignSelf: isMobile ? 'flex-end' : 'center', flexWrap: 'wrap' }}>
+                        {sig.photo_url && (
+                          <button
+                            onClick={() => setSelectedPhoto(sig)}
+                            className="btn btn-outline-dark"
+                            style={{ fontSize: 12, padding: '7px 12px', display: 'flex', alignItems: 'center', gap: 6 }}
+                          >
+                            <Maximize2 size={13} />
+                            {isRTL ? 'معاينة الصورة' : 'Voir la photo'}
+                          </button>
+                        )}
                         {isPending && (
-                          <button onClick={() => handleUpdateSignalement(sig.id, 'resolu')} className="btn btn-forest" style={{ fontSize: 12, padding: '5px 12px', display: 'flex', alignItems: 'center', gap: 4 }} disabled={updatingId === sig.id}>
+                          <button
+                            onClick={() => handleUpdateSignalement(sig.id, 'resolu')}
+                            className="btn btn-forest"
+                            style={{ fontSize: 12, padding: '7px 14px', display: 'flex', alignItems: 'center', gap: 6 }}
+                            disabled={updatingId === sig.id}
+                          >
                             {updatingId === sig.id ? <Loader2 size={13} className="animate-spin" /> : <Check size={13} />}
-                            {isRTL ? 'تم الحل' : 'Résolu'}
+                            {isRTL ? 'وضع كـ "تم الحل"' : 'Marquer résolu'}
                           </button>
                         )}
                       </div>
@@ -453,7 +564,7 @@ export default function CommuneDashboard() {
                     </span>
                   </div>
                   <h1 style={{ fontSize: isMobile ? '1.5rem' : '1.85rem', fontWeight: 800, margin: '0 0 10px 0', color: '#fff', lineHeight: 1.25 }}>
-                    {isRTL ? 'كتالوج المعدات والحاويات' : 'Catalogue des Conteneurs & Mobilier Urbain'}
+                    {isRTL ? 'حاوياتنا ومعدات الفرز' : 'Catalogue des Conteneurs & Mobilier Urbain'}
                   </h1>
                   <p style={{ fontSize: 14, color: 'rgba(255,255,255,0.82)', margin: 0, lineHeight: 1.6 }}>
                     {isRTL 
@@ -519,7 +630,7 @@ export default function CommuneDashboard() {
                     </div>
                     <div>
                       <h3 style={{ fontSize: '1.1rem', fontWeight: 700, color: 'var(--color-primary)', margin: '0 0 6px 0' }}>
-                        {isRTL ? 'الكتالوج فارغ حالياً' : 'Aucun modèle dans le catalogue'}
+                        {isRTL ? 'لا توجد نماذج حاويات حالياً' : 'Aucun modèle dans le catalogue'}
                       </h3>
                       <p style={{ fontSize: 13, color: 'var(--color-text-secondary)', margin: 0, maxWidth: 420 }}>
                         {isRTL 
@@ -998,6 +1109,80 @@ export default function CommuneDashboard() {
 
         </main>
       </div>
+
+      {/* ── MODAL AGRANDISSEMENT PHOTO SIGNALEMENT ── */}
+      {selectedPhoto && (
+        <div
+          style={{
+            position: 'fixed',
+            inset: 0,
+            background: 'rgba(0, 0, 0, 0.85)',
+            zIndex: 9999,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            padding: 20,
+          }}
+          onClick={() => setSelectedPhoto(null)}
+        >
+          <div
+            style={{
+              position: 'relative',
+              maxWidth: '92vw',
+              maxHeight: '92vh',
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+            }}
+            onClick={e => e.stopPropagation()}
+          >
+            <button
+              onClick={() => setSelectedPhoto(null)}
+              aria-label={isRTL ? 'إغلاق' : 'Fermer'}
+              style={{
+                position: 'absolute',
+                top: -42,
+                right: isRTL ? 'auto' : 0,
+                left: isRTL ? 0 : 'auto',
+                background: 'rgba(255, 255, 255, 0.2)',
+                border: 'none',
+                color: '#ffffff',
+                width: 36,
+                height: 36,
+                borderRadius: '50%',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                cursor: 'pointer',
+              }}
+            >
+              <X size={20} />
+            </button>
+
+            <img
+              src={selectedPhoto.photo_url}
+              alt="Signalement"
+              style={{
+                maxWidth: '88vw',
+                maxHeight: '80vh',
+                objectFit: 'contain',
+                borderRadius: 8,
+                background: '#ffffff',
+                padding: 6,
+                boxShadow: '0 20px 40px rgba(0,0,0,0.5)',
+              }}
+            />
+
+            {selectedPhoto.description && (
+              <div style={{ marginTop: 12, textAlign: 'center', color: '#ffffff', maxWidth: 640 }}>
+                <p style={{ fontSize: 14, margin: 0, opacity: 0.9, whiteSpace: 'pre-line' }}>
+                  {selectedPhoto.description}
+                </p>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
 }

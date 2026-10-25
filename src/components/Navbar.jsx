@@ -26,6 +26,7 @@ export default function Navbar({ hideAuth = false }) {
   const navLinks = [
     { label: t('nav.home'), href: '/' },
     { label: t('nav.howItWorks'), href: '/#comment-ca-marche' },
+    { label: t('nav.containers'), href: '/#nos-conteneurs' },
     { label: t('nav.about'), href: '/#acteurs' },
   ];
 

@@ -4,6 +4,7 @@ const fr = {
   nav: {
     home: 'Accueil',
     howItWorks: 'Comment ça marche',
+    containers: 'Nos conteneurs',
     about: 'À propos',
     contact: 'Contact',
     login: 'Connexion',
@@ -45,6 +46,13 @@ const fr = {
           desc: "Chaque action vous rapporte des points. Accumulez-les pour découvrir des cadeaux surprises.",
         },
       ],
+    },
+    containersSection: {
+      eyebrow: 'Nos Conteneurs',
+      title: 'Nos Conteneurs',
+      subtitle: 'Découvrez notre sélection de conteneurs urbains et bacs de tri écologiques mis à disposition pour préserver nos espaces.',
+      prev: 'Image précédente',
+      next: 'Image suivante',
     },
     actors: {
       title: 'Une plateforme pour tous',

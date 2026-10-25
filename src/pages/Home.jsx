@@ -3,6 +3,7 @@ import { Users, Recycle, MapPin, Building2, ArrowRight, Award, AlertTriangle } f
 import { useLanguage } from '../i18n/LanguageContext';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
+import ContainersCarousel from '../components/ContainersCarousel';
 
 export default function Home() {
   const { t, lang } = useLanguage();
@@ -418,6 +419,9 @@ export default function Home() {
 
         </div>
       </section>
+
+      {/* ── SECTION CARROUSEL : NOS CONTENEURS & PRODUITS ── */}
+      <ContainersCarousel />
 
       {/* ── ACTORS SECTION ── */}
       <section id="acteurs" className="section" style={{ background: '#ffffff' }}>

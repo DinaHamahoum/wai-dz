@@ -209,14 +209,38 @@ export default function AdminDashboard() {
     }
   };
 
-  const handleDeleteCatalogItem = async (id) => {
+  const handleDeleteCatalogItem = async (id, imageUrl) => {
     if (!window.confirm(isRTL ? 'حذف هذا العنصر؟' : 'Supprimer cet élément du catalogue ?')) return;
     try {
-      const { error } = await supabase.from('catalogue_conteneurs').delete().eq('id', id);
-      if (error) throw error;
+      // 1. Suppression du fichier physique dans le bucket de stockage
+      if (imageUrl) {
+        let storageFilePath = null;
+        if (imageUrl.includes('/conteneurs/')) {
+          storageFilePath = imageUrl.split('/conteneurs/')[1]?.split('?')[0];
+        } else if (imageUrl.includes('catalog/')) {
+          storageFilePath = `catalog/${imageUrl.split('catalog/')[1]?.split('?')[0]}`;
+        }
+        if (storageFilePath) {
+          const { error: storageError } = await supabase.storage
+            .from('conteneurs')
+            .remove([decodeURIComponent(storageFilePath)]);
+          if (storageError) console.warn('Erreur suppression storage conteneur:', storageError);
+        }
+      }
+
+      // 2. Suppression de l'enregistrement dans la table de base de données
+      const { error: dbError } = await supabase
+        .from('catalogue_conteneurs')
+        .delete()
+        .eq('id', id);
+
+      if (dbError) throw dbError;
+
+      // 3. Mise à jour immédiate de l'affichage
       setCatalogItems(prev => prev.filter(c => c.id !== id));
     } catch (err) {
-      alert(err.message);
+      console.error('Erreur lors de la suppression du conteneur:', err);
+      alert(err.message || (isRTL ? 'حدث خطأ أثناء الحذف' : 'Erreur lors de la suppression.'));
     }
   };
 
@@ -225,7 +249,7 @@ export default function AdminDashboard() {
     { key: 'container_requests', label: isRTL ? 'طلبات الحاويات' : 'Demandes de Conteneurs', icon: ShoppingCart, badge: pendingReqs || null },
     { key: 'communes',           label: isRTL ? 'البلديات' : 'Communes',                    icon: Building, badge: communes.length || null },
     { key: 'containers',         label: isRTL ? 'الحاويات' : 'Conteneurs',                  icon: Package },
-    { key: 'catalogue',          label: isRTL ? 'الكتالوج' : 'Catalogue',                   icon: ShoppingCart },
+    { key: 'catalogue',          label: isRTL ? 'حاوياتنا' : 'Catalogue',                   icon: ShoppingCart },
     { key: 'signalements',       label: isRTL ? 'البلاغات' : 'Signalements',                icon: AlertTriangle },
   ];
 
@@ -523,7 +547,7 @@ export default function AdminDashboard() {
             <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <h1 style={{ fontSize: '1.4rem', fontWeight: 800, color: 'var(--color-primary)', margin: 0 }}>
-                  {isRTL ? 'إدارة الكتالوج' : 'Gestion du Catalogue'}
+                  {isRTL ? 'إدارة حاوياتنا' : 'Gestion du Catalogue'}
                 </h1>
                 <button onClick={() => setCatalogModal(true)} className="btn btn-forest" style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 13 }}>
                   <Plus size={16} />
@@ -535,7 +559,7 @@ export default function AdminDashboard() {
                 <div style={{ background: '#fff', border: '1px solid var(--color-border)', borderRadius: 'var(--radius-sm)', padding: '40px 20px', textAlign: 'center' }}>
                   <Package size={36} style={{ margin: '0 auto 12px', opacity: 0.25 }} />
                   <p style={{ fontSize: 14, color: 'var(--color-text-muted)' }}>
-                    {isRTL ? 'لا توجد عناصر في الكتالوج.' : 'Aucun conteneur dans le catalogue.'}
+                    {isRTL ? 'لا توجد عناصر حالياً.' : 'Aucun conteneur dans le catalogue.'}
                   </p>
                 </div>
               ) : (
@@ -569,7 +593,7 @@ export default function AdminDashboard() {
                         </div>
 
                         <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-                          <button onClick={() => handleDeleteCatalogItem(item.id)} style={{ background: 'none', border: 'none', color: '#dc2626', cursor: 'pointer', padding: 6 }}>
+                          <button onClick={() => handleDeleteCatalogItem(item.id, item.image_url)} style={{ background: 'none', border: 'none', color: '#dc2626', cursor: 'pointer', padding: 6 }}>
                             <Trash2 size={16} />
                           </button>
                         </div>
@@ -591,10 +615,17 @@ export default function AdminDashboard() {
                 {signalements.map(sig => {
                   const isPending = !sig.statut || sig.statut === 'en_attente' || sig.statut === 'nouveau';
                   return (
-                    <div key={sig.id} style={{ background: '#fff', border: '1px solid var(--color-border)', borderRadius: 'var(--radius-sm)', padding: '14px 18px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 12, flexWrap: 'wrap' }}>
-                      <div>
-                        <p style={{ fontSize: 13, fontWeight: 600, color: 'var(--color-text)', margin: '0 0 2px 0' }}>{sig.description || 'Signalement'}</p>
-                        <p style={{ fontSize: 11, color: 'var(--color-text-muted)', margin: 0 }}>{formatTimeAgo(sig.created_at, lang)}</p>
+                    <div key={sig.id} style={{ background: '#fff', border: '1px solid var(--color-border)', borderRadius: 'var(--radius-sm)', padding: '14px 18px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 14, flexWrap: 'wrap' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
+                        {sig.photo_url && (
+                          <a href={sig.photo_url} target="_blank" rel="noopener noreferrer" title={isRTL ? 'معاينة الصورة' : 'Voir la photo'} style={{ display: 'block', width: 56, height: 56, borderRadius: 6, overflow: 'hidden', flexShrink: 0, border: '1px solid var(--color-border)' }}>
+                            <img src={sig.photo_url} alt="Signalement" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                          </a>
+                        )}
+                        <div>
+                          <p style={{ fontSize: 13, fontWeight: 600, color: 'var(--color-text)', margin: '0 0 2px 0' }}>{sig.description || 'Signalement'}</p>
+                          <p style={{ fontSize: 11, color: 'var(--color-text-muted)', margin: 0 }}>{formatTimeAgo(sig.created_at, lang)}</p>
+                        </div>
                       </div>
                       <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                         <span style={{ fontSize: 11, fontWeight: 700, padding: '3px 8px', borderRadius: 4, background: isPending ? '#fee2e2' : '#dcfce7', color: isPending ? '#dc2626' : '#16a34a' }}>
@@ -738,7 +769,7 @@ export default function AdminDashboard() {
           <div style={{ background: '#fff', padding: 28, borderRadius: 'var(--radius-sm)', width: '100%', maxWidth: 500, maxHeight: '90vh', overflowY: 'auto' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 }}>
               <h3 style={{ fontSize: '1.1rem', fontWeight: 800, color: 'var(--color-primary)', margin: 0 }}>
-                {isRTL ? 'إضافة للكتالوج' : 'Ajouter au Catalogue'}
+                {isRTL ? 'إضافة الحاوية' : 'Ajouter au Catalogue'}
               </h3>
               <button onClick={() => setCatalogModal(false)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--color-text-muted)' }}>
                 <X size={18} />
